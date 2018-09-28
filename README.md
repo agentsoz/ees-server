@@ -4,7 +4,8 @@ This example build a tile server to serve the MATSim network to the borwser clie
 
 ### How to run
 ```
-wget -O mount_alexander_shire_network.mbtiles https://cloudstor.aarnet.edu.au/plus/s/1hgqADguKI6N2Ul/download
+wget -O mbtiles.zip https://cloudstor.aarnet.edu.au/plus/s/a10DqAGJDP8QXFf/download
+unzip -o mbtiles.zip
 npm start
 ```
 

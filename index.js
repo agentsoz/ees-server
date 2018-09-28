@@ -49,13 +49,13 @@ function getList(dir) {
 
 async function main3() {
   // List the MBTiles files in this directory
-  const dir = ".";
+  const dir = "./mbtiles";
   const mbtilesFile = "mount_alexander_shire_network";
   const list = await getList(dir);
   console.log("Found the following MBTiles files in dir '%s':\n%s",dir,JSON.stringify(list, null, 2));
   // Load the one we want (assumes it is there)
   console.log("Loading %s", mbtilesFile);
-  const tiles = await loadTilesDb(list["mount_alexander_shire_network"]).catch(error => console.log(error));
+  const tiles = await loadTilesDb(list[mbtilesFile]).catch(error => console.log(error));
   // Start the express server
   const port = 12345;
   console.log("Starting the server on local port %d", port);
