@@ -24,25 +24,26 @@ npm install
 npm start
 ```
 
-### Notes on the `.mbtiles` file
-The `mount_alexander_shire_network.mbtiles` file is a MATSim simulation network file in  [MBTiles](https://github.com/mapbox/mbtiles-spec) format. The idea is to load this database and serve each tile as requested by the browser OpenLayers client. Below are the steps to create this file.
+### Notes on the `.mbtiles` files
+The `mount_alexander_shire_network.mbtiles` file is a MATSim simulation network file in  [MBTiles](https://github.com/mapbox/mbtiles-spec) format. The idea is to load this database and serve each tile as requested by the browser OpenLayers client. Below are the steps to create such a file.
 
 1. Create the MATSim network (``.xml.gz`) for Mount Alexander Shire and convert it to
 GeoJSON format (`.json`):
 ```
-../../data/createExampleMATSimJsonNetworks.sh
+./data/createExampleMATSimJsonNetworks.sh
 ```
 
 2. Build `tippecanoe` (see [instructions here](https://github.com/mapbox/tippecanoe#installation)):
 ```
-git clone git@github.com:mapbox/tippecanoe.git
-cd tippecanoe
+git clone git@github.com:mapbox/tippecanoe.git ./data/tippecanoe
+cd ./data/tippecanoe
 make -j
+cd -
 ```
 
 3. Use tippecanoe to convert the GeoJSON (`.json`) to MBTiles (`.mbtiles`) format:
 ```
 ./tippecanoe/tippecanoe \
--o mount_alexander_shire_network.mbtiles \
-mount_alexander_shire_network/mount_alexander_shire_networkP.json
+-o ./data/mount_alexander_shire_network.mbtiles \
+./data/mount_alexander_shire_network/mount_alexander_shire_networkP.json
 ```
