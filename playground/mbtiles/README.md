@@ -10,7 +10,8 @@ npm install
 ```
 
 ### How to run
-```npm start
+```
+npm start
 ```
 
 ### Notes on the `.mbtiles` file
