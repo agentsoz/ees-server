@@ -1,2 +1,3 @@
 *.mbtiles
 *.zip
+node_modules/

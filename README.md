@@ -2,11 +2,15 @@
 
 This example build a tile server to serve the MATSim network to the borwser client. Uses the [npm mbtiles package](https://www.npmjs.com/package/mbtiles).
 
-### How to run
+### How to install
 ```
 wget -O mbtiles.zip https://cloudstor.aarnet.edu.au/plus/s/a10DqAGJDP8QXFf/download
 unzip -o mbtiles.zip
-npm start
+npm install
+```
+
+### How to run
+```npm start
 ```
 
 ### Notes on the `.mbtiles` file

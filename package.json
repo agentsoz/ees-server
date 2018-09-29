@@ -12,6 +12,7 @@
   "dependencies": {
     "@mapbox/mbtiles": "^0.10.0",
     "@mapbox/tilelive": "^6.0.0",
+    "express": "^4.16.3",
     "global-mercator": "^3.0.3",
     "protobufjs": "^6.8.8"
   }
