@@ -43,7 +43,7 @@ cd -
 
 3. Use tippecanoe to convert the GeoJSON (`.json`) to MBTiles (`.mbtiles`) format:
 ```
-./tippecanoe/tippecanoe \
+./data/tippecanoe/tippecanoe \
 -o ./data/mount_alexander_shire_network.mbtiles \
 ./data/mount_alexander_shire_network/mount_alexander_shire_networkP.json
 ```
