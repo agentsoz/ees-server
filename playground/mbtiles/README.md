@@ -1,6 +1,16 @@
 ## MBTiles Example
 
-This example build a tile server to serve the MATSim network to the borwser client. Uses the [npm mbtiles package](https://www.npmjs.com/package/mbtiles).
+This example builds a tile server for a [MATSim](http://ci.matsim.org:8080/job/MATSim-Book/ws/partOne-latest.pdf) road network.
+Uses npm packages [tilelive](https://www.npmjs.com/package/@mapbox/tilelive) and
+[mbtiles](https://www.npmjs.com/package/@mapbox/mbtiles) to load a
+[MBTiles](https://github.com/mapbox/mbtiles-spec) database and serve
+vector tiles in the [Slippy XYZ format](https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames).
+The browser renders the tiles within a [Mapbox](https://www.mapbox.com/api-documentation/) map.
+
+**Note | 29-Sep-18 | DS** : *Vector tiles in gzipped protobuf format (what is
+  served by the MBTiles server) are not supported by [OpenLayers](https://openlayers.org/),
+  so at this stage Mapbox seems to be the best option for map based interaction
+  with the MATSim network.*
 
 ### How to install
 ```
