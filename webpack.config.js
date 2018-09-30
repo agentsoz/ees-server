@@ -2,8 +2,8 @@
 
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+//const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+//const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: { main: ['babel-polyfill', './src/index.js'] },
@@ -25,22 +25,23 @@ module.exports = {
         use: {
           loader: "babel-loader"
         }
-      },
-      {
-        test: /\.css$/,
-        use:  [ 'style-loader', MiniCssExtractPlugin.loader, 'css-loader']
       }
+      // ,
+      // {
+      //   test: /\.css$/,
+      //   use:  [ 'style-loader', MiniCssExtractPlugin.loader, 'css-loader']
+      // }
     ]
   },
   plugins: [
-    new MiniCssExtractPlugin({
-      filename: 'style.[contenthash].css',
-    }),
-    new HtmlWebpackPlugin({
-      inject: false,
-      hash: true,
-      template: './src/index.html',
-      filename: 'index.html'
-    }),
+    // new MiniCssExtractPlugin({
+    //   filename: 'style.[contenthash].css',
+    // }),
+    // new HtmlWebpackPlugin({
+    //   inject: false,
+    //   hash: true,
+    //   template: './src/index.html',
+    //   filename: 'index.html'
+    // }),
   ]
 };
