@@ -4,10 +4,12 @@ const tilelive = require('@mapbox/tilelive');
 const MBTiles = require('@mapbox/mbtiles').registerProtocols(tilelive);
 const fs = require('fs');
 const download = require('download');
+var cors = require('cors')
 
 function startServer(port) {
   return new Promise(function(resolve, reject){
     var app = express();
+    app.use(cors());
     app.listen(port, resolve(app));
   });
 }
