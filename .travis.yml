@@ -9,7 +9,7 @@ before_deploy:
 deploy:
 - provider: script
   # deploys the application to now.sh
-  script: now --public --token $NOW_TOKEN && now alias --token $NOW_TOKEN
+  script: now --public --token $NOW_TOKEN && now alias --token $NOW_TOKEN && now --token $NOW_TOKEN rm ees-server --safe --yes
   skip_cleanup: true
   on:
     master: true
