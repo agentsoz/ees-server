@@ -50,6 +50,7 @@
   },
   "now": {
     "public": true,
-    "name": "ees-server"
+    "name": "ees-server",
+    alias: "ees-server"
   }
 }
