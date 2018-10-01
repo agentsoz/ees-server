@@ -11,8 +11,7 @@
     "server": "cd dist && node main.js",
     "server:watch": "cd dist && nodemon main.js --watch .",
     "dev": "npm run build:dev && npm-run-all --parallel build:dev:watch server:watch",
-    "start": "npm run server",
-    "deploy": "npm run clean && npm run build && now && now alias"
+    "start": "npm run server"
   },
   "repository": {
     "type": "git",
