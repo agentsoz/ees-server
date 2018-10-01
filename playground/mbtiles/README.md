@@ -25,7 +25,7 @@ npm start
 ```
 
 ### Notes on the `.mbtiles` files
-The `mount_alexander_shire_network.mbtiles` file is a MATSim simulation network file in  [MBTiles](https://github.com/mapbox/mbtiles-spec) format. The idea is to load this database and serve each tile as requested by the browser OpenLayers client. Below are the steps to create such a file.
+The `mount_alexander_shire_network.mbtiles` file is a MATSim simulation network file in  [MBTiles](https://github.com/mapbox/mbtiles-spec) format. The idea is to load this database and serve each tile as requested by the browser client. Below are the steps to create such a file.
 
 1. Create the MATSim network (``.xml.gz`) for Mount Alexander Shire and convert it to
 GeoJSON format (`.json`) as follows. *Note that you will need GDAL [`ogr2ogr`](http://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries) and Java-8 (but not higher!) installed for this to work*.
