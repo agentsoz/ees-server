@@ -14,7 +14,7 @@ export async function loadAllTiles(tiles) {
   for (var key in tiles) {
     // Download the mbtiles ready for loading
     var mbtilesFile = key+".mbtiles";
-    var mbtilesUrl = tiles[key];
+    var mbtilesUrl = tiles[key].download;
     if (!fs.existsSync(mbtilesFile)) {
       console.log("Fetching MBTiles DB %s from %s", mbtilesFile, mbtilesUrl);
       await getTilesDb(mbtilesUrl, mbtilesFile).catch(error => console.log(error));
@@ -28,8 +28,12 @@ export async function loadAllTiles(tiles) {
 
   // load them into our tilesources datastructure
   for (var mbtilesKey in mbtilesList) {
-    console.log("Loading %s", mbtilesKey);
-    tilesources[mbtilesKey] = await loadTilesDb(mbtilesList[mbtilesKey]);
+    if (tiles.hasOwnProperty(mbtilesKey)) {
+      console.log("Loading %s as region %s", mbtilesKey, tiles[mbtilesKey].region);
+      tilesources[tiles[mbtilesKey].region] = await loadTilesDb(mbtilesList[mbtilesKey]);
+    } else {
+      console.log("Additional mbtiles found that I was not expecting: %s. Skipping.", mbtilesKey)
+    }
   }
 }
 

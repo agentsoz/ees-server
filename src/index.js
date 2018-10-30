@@ -17,8 +17,14 @@ function startServer(port) {
 
 async function main3() {
   var tiledict = {};
-  tiledict["mount_alexander_shire_network"] = "https://cloudstor.aarnet.edu.au/plus/s/oh23zw4a0Vy4PNQ/download";
-  tiledict["surf_coast_shire_network"] = "https://cloudstor.aarnet.edu.au/plus/s/JK7STxWGKI2jNe4/download";
+  tiledict["mount_alexander_shire_network"] = {
+    region: "mount-alexander-shire",
+    download: "https://cloudstor.aarnet.edu.au/plus/s/oh23zw4a0Vy4PNQ/download"
+  }
+  tiledict["surf_coast_shire_network"] = {
+    region: "surf-coast-shire",
+    download: "https://cloudstor.aarnet.edu.au/plus/s/JK7STxWGKI2jNe4/download"
+  }
 
   // Download all tiles from cloud storage if necessary, and load them into memory
   loadAllTiles(tiledict);
@@ -27,7 +33,7 @@ async function main3() {
   const port = 12345;
   console.log("Starting the server on local port %d", port);
   const server = await startServer(port);
-  console.log("Ready and serving the %s tiles at http://localhost:%s", "mount_alexander_shire_network", port);
+  console.log("Ready and serving the tiles at http://localhost:%s", port);
 
   // Set up some HTTP GET handlers
   // Serve index.html if nothing specified
