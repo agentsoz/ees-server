@@ -44,7 +44,7 @@ async function main3() {
     res.sendFile(__dirname + '/' + req.params.file);
   });
   // Handle something like: /tiles/matsim/zoom/lon/lat
-  server.get('/tiles/:layer/:z/:x/:y.pbf', function (req, res) {
+  server.get('/matsim-tiles/:layer/:z/:x/:y.pbf', function (req, res) {
     const x = parseInt(req.params.x);
     const y = parseInt(req.params.y);
     const z = parseInt(req.params.z);
