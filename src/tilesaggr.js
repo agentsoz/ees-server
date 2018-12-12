@@ -1,9 +1,11 @@
 const tilelive = require('@mapbox/tilelive');
 const MBTiles = require('@mapbox/mbtiles').registerProtocols(tilelive);
 const fs = require('fs');
-const download = require('download');
+import { downloadResource } from './util';
 
-var dir = ".";
+const dir = "mbtiles";
+if (!fs.existsSync(dir))
+  fs.mkdirSync(dir);
 
 // where we will store all tile sources. Will load every mbtiles region for now. Will memory be an issue?
 var tilesources = {};
@@ -13,9 +15,11 @@ export async function loadAllTiles(tiles) {
     // Download the mbtiles ready for loading
     var mbtilesFile = key+".mbtiles";
     var mbtilesUrl = tiles[key].download;
-    if (!fs.existsSync(mbtilesFile)) {
+    if (!fs.existsSync(dir+"/"+mbtilesFile)) {
       console.log("Fetching MBTiles DB %s from %s", mbtilesFile, mbtilesUrl);
-      await getTilesDb(mbtilesUrl, mbtilesFile).catch(error => console.log(error));
+
+      // Fetch mbtiles from cloud storage given url and destination
+      await downloadResource(mbtilesUrl, dir, mbtilesFile).catch(error => console.log(error));
     } else {
       console.log("Found %s so will use it",mbtilesFile);
     }
@@ -33,23 +37,6 @@ export async function loadAllTiles(tiles) {
       console.log("Additional mbtiles found that I was not expecting: %s. Skipping.", mbtilesKey)
     }
   }
-}
-
-/**
- * Fetch mbtiles from cloud storage given url and destination
- */
-function getTilesDb(url, dest) {
-  return new Promise(function(resolve, reject){
-    var err = null;
-    download(url).then(data => {
-      try {
-        fs.writeFileSync(dest, data);
-        resolve(dest);
-      } catch(error) {
-        reject(err);
-      }
-    });
-  });
 }
 
 /**

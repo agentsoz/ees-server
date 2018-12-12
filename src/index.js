@@ -3,6 +3,49 @@ const express = require('express');
 const fs = require('fs');
 var cors = require('cors')
 import {loadAllTiles, getTile} from './tilesaggr'
+import { PHOENIX_DIR, loadAllFires} from './phoenixaggr'
+
+/**
+ * MATSim Networks
+ */
+var tiledict = {};
+// Shape name: mount_alexander_shire_networkP
+tiledict["mount_alexander_shire_network"] = {
+  region: "mount-alexander-shire",
+  download: "https://cloudstor.aarnet.edu.au/plus/s/oh23zw4a0Vy4PNQ/download"
+}
+// Shape name: surf_coast_shire_networkP
+tiledict["surf_coast_shire_network"] = {
+  region: "surf-coast-shire",
+  download: "https://cloudstor.aarnet.edu.au/plus/s/JK7STxWGKI2jNe4/download"
+}
+
+/**
+ * Phoenix Fires
+ */
+var phoenixdict = {};
+phoenixdict["20181109_mountalex_evac_ffdi50a_grid.shp.json"] =
+  "https://cloudstor.aarnet.edu.au/plus/s/W0lk21g3Ry9Wnqs/download?path=%2Fphoenix%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi50a_grid.shp.json"
+phoenixdict["20181109_mountalex_evac_ffdi50b_grid.shp.json"] =
+  "https://cloudstor.aarnet.edu.au/plus/s/W0lk21g3Ry9Wnqs/download?path=%2Fphoenix%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi50b_grid.shp.json"
+phoenixdict["20181109_mountalex_evac_ffdi50c_grid.shp.json"] =
+  "https://cloudstor.aarnet.edu.au/plus/s/W0lk21g3Ry9Wnqs/download?path=%2Fphoenix%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi50c_grid.shp.json"
+phoenixdict["20181109_mountalex_evac_ffdi50d_grid.shp.json"] =
+  "https://cloudstor.aarnet.edu.au/plus/s/W0lk21g3Ry9Wnqs/download?path=%2Fphoenix%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi50d_grid.shp.json"
+phoenixdict["20181109_mountalex_evac_ffdi75a_grid.shp.json"] =
+  "https://cloudstor.aarnet.edu.au/plus/s/W0lk21g3Ry9Wnqs/download?path=%2Fphoenix%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi75a_grid.shp.json"
+phoenixdict["20181109_mountalex_evac_ffdi75b_grid.shp.json"] =
+  "https://cloudstor.aarnet.edu.au/plus/s/W0lk21g3Ry9Wnqs/download?path=%2Fphoenix%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi75b_grid.shp.json"
+phoenixdict["20181109_mountalex_evac_ffdi75c_grid.shp.json"] =
+  "https://cloudstor.aarnet.edu.au/plus/s/W0lk21g3Ry9Wnqs/download?path=%2Fphoenix%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi75c_grid.shp.json"
+phoenixdict["20181109_mountalex_evac_ffdi75d_grid.shp.json"] =
+  "https://cloudstor.aarnet.edu.au/plus/s/W0lk21g3Ry9Wnqs/download?path=%2Fphoenix%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi75d_grid.shp.json"
+phoenixdict["20181109_mountalex_evac_ffdi100b_grid.shp.json"] =
+  "https://cloudstor.aarnet.edu.au/plus/s/W0lk21g3Ry9Wnqs/download?path=%2Fphoenix%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi100b_grid.shp.json"
+phoenixdict["20181109_mountalex_evac_ffdi100c_grid.shp.json"] =
+  "https://cloudstor.aarnet.edu.au/plus/s/W0lk21g3Ry9Wnqs/download?path=%2Fphoenix%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi100c_grid.shp.json"
+phoenixdict["20181109_mountalex_evac_ffdi100d_grid.shp.json"] =
+  "https://cloudstor.aarnet.edu.au/plus/s/W0lk21g3Ry9Wnqs/download?path=%2Fphoenix%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi100d_grid.shp.json"
 
 function startServer(port) {
   return new Promise(function(resolve, reject){
@@ -13,18 +56,11 @@ function startServer(port) {
 }
 
 async function main3() {
-  var tiledict = {};
-  tiledict["mount_alexander_shire_network"] = {
-    region: "mount-alexander-shire",
-    download: "https://cloudstor.aarnet.edu.au/plus/s/oh23zw4a0Vy4PNQ/download"
-  }
-  tiledict["surf_coast_shire_network"] = {
-    region: "surf-coast-shire",
-    download: "https://cloudstor.aarnet.edu.au/plus/s/JK7STxWGKI2jNe4/download"
-  }
-
   // Download all tiles from cloud storage if necessary, and load them into memory
   loadAllTiles(tiledict);
+
+  // download all phoenix fires if necessary
+  loadAllFires(phoenixdict);
 
   // Start the express server
   const port = 12345;
@@ -39,10 +75,21 @@ async function main3() {
   });
   // Don't have a favicon
   server.get('/favicon.ico', (req, res) => res.status(204));
+
+  // wake the server
+  server.get('/wake/please', function(req, res){
+    res.send("OK");
+  });
+
   // Serve the requested file (needed to get style.json)
   server.get('/:file', function(req, res){
     res.sendFile(__dirname + '/' + req.params.file);
   });
+  // Serve the requested phoenix file (needed to get style.json)
+  server.get('/'+PHOENIX_DIR+'/:file', function(req, res){
+    res.sendFile(__dirname + '/' + PHOENIX_DIR + '/' + req.params.file);
+  });
+
   // Handle something like: /tiles/matsim/zoom/lon/lat
   server.get('/matsim-tiles/:layer/:z/:x/:y.pbf', function (req, res) {
     const x = parseInt(req.params.x);
