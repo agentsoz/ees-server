@@ -47,7 +47,8 @@
     "download": "^7.1.0",
     "event-stream": "^3.3.4",
     "express": "^4.16.3",
-    "global-mercator": "^3.0.3"
+    "global-mercator": "^3.0.3",
+    "python-shell": "^1.0.7"
   },
   "now": {
     "public": true,

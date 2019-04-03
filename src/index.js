@@ -1,7 +1,10 @@
 const globalMercator = require('global-mercator')
 const express = require('express');
+const bodyParser = require('body-parser');
 const fs = require('fs');
-var cors = require('cors')
+var cors = require('cors');
+var pythonShell = require('python-shell');
+
 import {loadAllTiles, getTile} from './tilesaggr'
 import { PHOENIX_DIR, loadAllFires} from './phoenixaggr'
 
@@ -51,6 +54,8 @@ function startServer(port) {
   return new Promise(function(resolve, reject){
     var app = express();
     app.use(cors());
+    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.json());
     app.listen(port, resolve(app));
   });
 }
@@ -78,6 +83,35 @@ async function main3() {
 
   // wake the server
   server.get('/wake/please', function(req, res){
+    res.send("OK");
+  });
+
+  server.post('/save-settings', function (req, res) {
+    fs.writeFileSync("./../scripts/config.json", JSON.stringify(req.body, null, 4), function (err) {
+      if (err) {
+        console.log(err);
+      }
+      console.log("The file was saved!");
+    });
+
+    var options = {
+      mode: 'text',
+      scriptPath: "./../scripts/",
+      args: ['-c', "./../scripts/config.json",
+        '-o', "./../scripts/output/",
+        '-t', "./../scripts/templates/",
+        '-n', "testScenario",
+        '-v'
+      ]
+    };
+
+    pythonShell.PythonShell.run('build-scenario-v2.py', options, function (err, res1) {
+      if (err && err.exitCode != 0)
+        console.log('Could not build simulation: ' + err);
+      if (res1)
+        console.log(res1);
+    });
+
     res.send("OK");
   });
 
