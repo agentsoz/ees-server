@@ -87,7 +87,7 @@ async function main3() {
   });
 
   server.post('/save-settings', function (req, res) {
-    fs.writeFileSync("./../scripts/config.json", JSON.stringify(req.body, null, 4), function (err) {
+    fs.writeFileSync("./../scripts/config.json", JSON.stringify(req.body.config, null, 4), function (err) {
       if (err) {
         console.log(err);
       }
@@ -100,7 +100,7 @@ async function main3() {
       args: ['-c', "./../scripts/config.json",
         '-o', "./../scripts/output/",
         '-t', "./../scripts/templates/",
-        '-n', "testScenario",
+        '-n', req.body.simulationName,
         '-v'
       ]
     };
