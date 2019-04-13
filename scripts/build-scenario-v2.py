@@ -1,9 +1,16 @@
 #!/usr/bin/env python
+
+# Example run:
+# python3 build-scenario-v2.py -c config.json -t scenarios/templates/ -o scenarios/surf-coast-shire -n town -v
+# Will create folder scenarios/surf-coast-shite/town.
+
+
 import sys
 import os
 import argparse
 import json
-
+import subprocess
+from subprocess import call
 # ----------------------------------------------------------------------------
 # Globals and Defaults
 # ----------------------------------------------------------------------------
@@ -100,6 +107,7 @@ outdir = os.path.join(args.outdir, prefix)
 # Template Files
 t_ees = os.path.join(args.templatesdir, "t_ees.xml")
 t_scenario_main = os.path.join(args.templatesdir, "t_scenario_main.xml")
+t_scenario_fire = os.path.join(args.templatesdir, "scenario_fire.json")
 
 # Output files
 o_ees = os.path.join(outdir, "ees.xml")
@@ -110,7 +118,6 @@ if os.path.exists(outdir):
     sys.exit("\nERROR: '%s' already exists; will not proceed" % outdir)
 
 # create the output dir
-
 os.makedirs(outdir)
 
 # load the json input
@@ -171,3 +178,6 @@ scenario_main_replacements = {
     '${bdiagents}': data['scenario_main'][0]['bdiagents'],
 }
 write_file(t_scenario_main, o_scenario_main, scenario_main_replacements)
+
+
+call('java  -Xmx4g -Xms4g -cp ../../ees/target/ees-2.1.1-SNAPSHOT.jar  io.github.agentsoz.ees.Run --config ' + outdir + '/ees.xml', shell=True)
