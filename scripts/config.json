@@ -22,7 +22,7 @@
       "matsim" : [
         {
                 "outputDir": "test/output/io/github/agentsoz/ees//TypicalSummerWeekday50kTest/testTypicalSummerWeekday50k/matsim",
-                "configXml": "scenarios/surf-coast-shire/typical-summer-weekday-50k/scenario_matsim_main.xml",
+                "configXml": "scenarios/surf-coast-shire/test-files/scenario_matsim_main.xml",
                 "maxDistanceForFireVisual": "1000",
                 "maxDistanceForSmokeVisual": "5000",
                 "fireAvoidanceBufferForVehicles": "5000",
@@ -36,7 +36,7 @@
       "phoenix" : [
         {
                 "ignitionHHMM": "00:00",
-                "fireGeoJson": "scenarios/surf-coast-shire/typical-summer-weekday-50k/scenario_fire.json",
+                "fireGeoJson": "scenarios/surf-coast-shire/test-files/scenario_fire.json",
                 "smokeGeoJson": ""
         }
       ],
@@ -56,7 +56,7 @@
   ],
   "scenario_main": [
     {
-      "matsimfile" : "scenarios/surf-coast-shire/typical-summer-weekday-50k/scenario_matsim_main.xml",
+      "matsimfile" : "scenarios/surf-coast-shire/test-files/scenario_matsim_main.xml",
 
       "firefile" : [
         {
@@ -68,7 +68,7 @@
 
       "geographyfile" : [
         {
-                "geo_name": "scenarios/surf-coast-shire/typical-summer-weekday-50k/scenario_geography.xml"
+                "geo_name": "scenarios/surf-coast-shire/test-files/scenario_geography.xml"
         }
       ],
 
