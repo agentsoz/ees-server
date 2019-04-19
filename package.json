@@ -37,7 +37,7 @@
     "style-loader": "^0.23.0",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.1",
-    "webpack-dev-server": "^3.1.9",
+    "webpack-dev-server": "^3.3.1",
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
@@ -46,9 +46,12 @@
     "cors": "^2.8.4",
     "download": "^7.1.0",
     "event-stream": "^3.3.4",
+    "exec": "^0.2.1",
     "express": "^4.16.3",
     "global-mercator": "^3.0.3",
-    "python-shell": "^1.0.7"
+    "path": "^0.12.7",
+    "python-shell": "^1.0.7",
+    "xml2js": "^0.4.19"
   },
   "now": {
     "public": true,

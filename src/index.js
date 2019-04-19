@@ -4,6 +4,9 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 var cors = require('cors');
 var pythonShell = require('python-shell');
+var path = require('path');
+var xml2js = require('xml2js');
+const { exec } = require('child_process');
 
 import {loadAllTiles, getTile} from './tilesaggr'
 import { PHOENIX_DIR, loadAllFires} from './phoenixaggr'
@@ -86,33 +89,99 @@ async function main3() {
     res.send("OK");
   });
 
-  server.post('/save-settings', function (req, res) {
-    fs.writeFileSync("./../scripts/config.json", JSON.stringify(req.body.config, null, 4), function (err) {
-      if (err) {
-        console.log(err);
+  server.post("/save-settings", function(req, res) {
+
+    // Generate config.json file from UI settings
+    fs.writeFileSync(
+      "./../scripts/config.json",
+      JSON.stringify(req.body.config, null, 4),
+      function(err) {
+        if (err) {
+          console.log(err);
+        }
+        console.log("The file was saved!");
       }
-      console.log("The file was saved!");
-    });
+    );
 
     var options = {
-      mode: 'text',
+      mode: "text",
       scriptPath: "./../scripts/",
-      args: ['-c', "./../scripts/config.json",
-        '-o', "./../scripts/output/",
-        '-t', "./../scripts/templates/",
-        '-n', req.body.simulationName,
-        '-v'
+      args: [
+        "-c",
+        "./../scripts/config.json",
+        "-o",
+        "./../scripts/output/surf-coast-shire/",
+        "-t",
+        "./../scripts/templates/",
+        "-n",
+        req.body.simulationName,
+        "-v"
       ]
     };
 
-    pythonShell.PythonShell.run('build-scenario-v2.py', options, function (err, res1) {
+    var results = [];
+
+    pythonShell.PythonShell.run("build-scenario-v2.py", options, function(
+      err,
+      res1
+    ) {
       if (err && err.exitCode != 0)
-        console.log('Could not build simulation: ' + err);
-      if (res1)
-        console.log(res1);
+        console.log("Could not build simulation1: " + err);
+      if (res1) results.push(res1);
     });
 
-    res.send("OK");
+    res.send("File Saved!");
+  });
+
+  server.post("/create-simulation", function(req, res) {
+    var scenarioPath = "./../scripts/output/surf-coast-shire/test/";
+    var userDir = "./../scripts/output/surf-coast-shire/";
+    var dist = "./../../ees/target/ees-2.1.1-SNAPSHOT.jar";
+
+    var fileMain = path.join(scenarioPath, "ees.xml");
+    var fileLog = path.join(scenarioPath, "scenario.log");
+    var fileJillLog = path.join(scenarioPath, "jill.log");
+    var fileJillOut = path.join(scenarioPath, "jill.out");
+    var fileSafeline = path.join(scenarioPath, "safeline.%d%.out");
+
+    // Read number of agents from config xml
+    var parser = new xml2js.Parser();
+
+    fs.readFile(fileMain, function(err, data) {
+      parser.parseString(data, function (err, res2) {
+        if (err && err.exitCode != 0)
+          console.log("Could not build simulation: " + err);
+
+        //var nAgents = res2.simulation.bdiagents[0].trim();
+
+        // Run the simulation
+        //var plotScript = path.join(distDir, "create-analysis-graphs.sh");
+
+        var cmd =
+          "java -Xmx4g -Xms4g -cp " +
+          dist +
+          " io.github.agentsoz.ees.Run" +
+          " --config " +
+          fileMain;
+
+        console.log("");
+        console.log(cmd);
+        console.log("");
+
+        exec(cmd, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+          }
+          console.log(`stdout: ${stdout}`);
+          console.log(`stderr: ${stderr}`);
+        });
+        //return callback(null, results);
+      });
+    });
+
+    console.log("OK!");
+    res.send("Simulation Created!");
   });
 
   // Serve the requested file (needed to get style.json)
