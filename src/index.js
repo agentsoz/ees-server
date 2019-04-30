@@ -7,7 +7,7 @@ var pythonShell = require('python-shell');
 
 import {loadAllTiles, getTile} from './tilesaggr'
 import { PHOENIX_DIR, loadAllFires} from './phoenixaggr'
-import { connectRedisClient, loadPopulation } from './georedis'
+import { connectRedisClient, loadPopulation, getPopulationSets } from './redis'
 
 /**
  * MATSim Networks
@@ -62,10 +62,6 @@ function startServer(port) {
 }
 
 async function main3() {
-  // initialise connection to redis server and load population to redis
-  connectRedisClient();
-  loadPopulation();
-
   // Download all tiles from cloud storage if necessary, and load them into memory
   loadAllTiles(tiledict);
 
@@ -77,6 +73,10 @@ async function main3() {
   console.log("Starting the server on local port %d", port);
   const server = await startServer(port);
   console.log("Ready and serving the tiles at http://localhost:%s", port);
+
+  // initialise connection to redis server and load population to redis
+  connectRedisClient();
+  loadPopulation();
 
   // Set up some HTTP GET handlers
   // Serve index.html if nothing specified
@@ -91,6 +91,13 @@ async function main3() {
     res.send("OK");
   });
 
+  // Get population sets from redis based on activity
+  server.get('/get-population', function(req, res){
+    var result = getPopulationSets(req.body);
+    res.send(result);
+  });
+
+  // save settings from UI and generate config,json file
   server.post('/save-settings', function (req, res) {
     fs.writeFileSync("./../scripts/config.json", JSON.stringify(req.body.config, null, 4), function (err) {
       if (err) {

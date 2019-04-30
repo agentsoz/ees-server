@@ -22,6 +22,7 @@ export function connectRedisClient() {
     });
 }
 
+// Filter xml population file to set and add them to redis
 export function loadPopulation() {
 
     var xml = null;
@@ -52,6 +53,46 @@ export function loadPopulation() {
     }
 }
 
+export function getPopulationSets({ home, work, shops, beach, other, end }) {
+    var allActivitiesSet = [];
+    if (home) {
+        redisClient.get('activities_home', function (err, reply) {
+            allActivitiesSet = allActivitiesSet.concat(reply);
+        });
+    }
+
+    if (work) {
+        redisClient.get('activities_work', function (err, reply) {
+            allActivitiesSet = allActivitiesSet.concat(reply);
+        });
+    }
+
+    if (shops) {
+        redisClient.get('activities_shops', function (err, reply) {
+            allActivitiesSet = allActivitiesSet.concat(reply);
+        });
+    }
+
+    if (beach) {
+        redisClient.get('activities_beach', function (err, reply) {
+            allActivitiesSet = allActivitiesSet.concat(reply);
+        });
+    }
+
+    if (other) {
+        redisClient.get('activities_other', function (err, reply) {
+            allActivitiesSet = allActivitiesSet.concat(reply);
+        });
+    }
+
+    if (end) {
+        redisClient.get('activities_end', function (err, reply) {
+            allActivitiesSet = allActivitiesSet.concat(reply);
+        });
+    }
+}
+
+// Add a set to redis
 function addSet(name, set) {
     var setJson = JSON.stringify(set);
     redisClient.set(name, setJson, function (err, reply) {
@@ -62,6 +103,7 @@ function addSet(name, set) {
     });
 }
 
+// Allocates activity to its appropriate set
 function processActivities(activity) {
     _.filter(activity,
         function (innerActivityObject) {
@@ -86,36 +128,4 @@ function processActivities(activity) {
                     break;
             }
         });
-}
-
-// Initial idea was to filter whole xml file but it turned out to be messy and not efficient
-function filterPopulationByActivity(populationData, activity) {
-    // Filter population by activity
-    var activities = [];
-
-    _.filter(populationData,
-        function (innerPopulationObject) {
-
-            _.filter(innerPopulationObject.person,
-                function (innerPersonObject) {
-
-                    _.filter(innerPersonObject.plan,
-                        function (innerPlanObject) {
-
-                            _.filter(innerPlanObject.activity,
-                                function (innerActivityObject) {
-
-                                    var temp = _.filter(innerActivityObject,
-                                        function (_innerActivityObject) {
-
-                                            return _innerActivityObject.type == activity;
-                                        });
-
-                                    activities = activities.concat(temp);
-                                });
-                        });
-                });
-        });
-
-    return JSON.stringify(activities);
 }
