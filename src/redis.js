@@ -25,6 +25,13 @@ export function connectRedisClient() {
 // Filter xml population file to set and add them to redis
 export function loadPopulation() {
 
+    redisClient.del('activities_end');
+    redisClient.del('activities_other');
+    redisClient.del('activities_beach');
+    redisClient.del('activities_shops');
+    redisClient.del('activities_home');
+    redisClient.del('activities_work');
+
     var xml = null;
     try {
         // Create stream from population gzip file
@@ -54,42 +61,45 @@ export function loadPopulation() {
 }
 
 export function getPopulationSets({ home, work, shops, beach, other, end }) {
-    var allActivitiesSet = [];
-    if (home) {
-        redisClient.get('activities_home', function (err, reply) {
-            allActivitiesSet = allActivitiesSet.concat(reply);
-        });
-    }
+    return new Promise(function (resolve, reject) {
+        var allActivitiesSet = [];
+        if (home) {
+            redisClient.get('activities_home', function (err, reply) {
+                allActivitiesSet = allActivitiesSet.concat(reply);
+            });
+        }
 
-    if (work) {
-        redisClient.get('activities_work', function (err, reply) {
-            allActivitiesSet = allActivitiesSet.concat(reply);
-        });
-    }
+        if (work) {
+            redisClient.get('activities_work', function (err, reply) {
+                allActivitiesSet = allActivitiesSet.concat(reply);
+                resolve(allActivitiesSet);
+            });
+        }
 
-    if (shops) {
-        redisClient.get('activities_shops', function (err, reply) {
-            allActivitiesSet = allActivitiesSet.concat(reply);
-        });
-    }
+        if (shops) {
+            redisClient.get('activities_shops', function (err, reply) {
+                allActivitiesSet = allActivitiesSet.concat(reply);
+            });
+        }
 
-    if (beach) {
-        redisClient.get('activities_beach', function (err, reply) {
-            allActivitiesSet = allActivitiesSet.concat(reply);
-        });
-    }
+        if (beach) {
+            redisClient.get('activities_beach', function (err, reply) {
+                allActivitiesSet = allActivitiesSet.concat(reply);
+            });
+        }
 
-    if (other) {
-        redisClient.get('activities_other', function (err, reply) {
-            allActivitiesSet = allActivitiesSet.concat(reply);
-        });
-    }
+        if (other) {
+            redisClient.get('activities_other', function (err, reply) {
+                allActivitiesSet = allActivitiesSet.concat(reply);
+            });
+        }
 
-    if (end) {
-        redisClient.get('activities_end', function (err, reply) {
-            allActivitiesSet = allActivitiesSet.concat(reply);
-        });
-    }
+        if (end) {
+            redisClient.get('activities_end', function (err, reply) {
+                allActivitiesSet = allActivitiesSet.concat(reply);
+            });
+        }
+    });
 }
 
 // Add a set to redis
