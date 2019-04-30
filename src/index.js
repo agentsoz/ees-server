@@ -7,6 +7,7 @@ var pythonShell = require('python-shell');
 
 import {loadAllTiles, getTile} from './tilesaggr'
 import { PHOENIX_DIR, loadAllFires} from './phoenixaggr'
+import { connectRedisClient, loadPopulation } from './georedis'
 
 /**
  * MATSim Networks
@@ -61,6 +62,10 @@ function startServer(port) {
 }
 
 async function main3() {
+  // initialise connection to redis server and load population to redis
+  connectRedisClient();
+  loadPopulation();
+
   // Download all tiles from cloud storage if necessary, and load them into memory
   loadAllTiles(tiledict);
 
