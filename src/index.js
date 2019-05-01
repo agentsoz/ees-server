@@ -94,8 +94,13 @@ async function main3() {
   // Get population sets from redis based on activity
   server.get('/get-population', function (req, res) {
     console.log(req.body);
-    getPopulationSets(req.body).then(function (data) {
-      res.send(data);
+
+    getPopulationSets(req.body).then(function (data, err) {
+      if (err)
+        console.log('ERROR: ', err);
+      else {
+        res.send(data);
+      }
     });
   });
 
