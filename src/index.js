@@ -5,8 +5,9 @@ const fs = require('fs');
 var cors = require('cors');
 var pythonShell = require('python-shell');
 
-import {loadAllTiles, getTile} from './tilesaggr'
-import { PHOENIX_DIR, loadAllFires} from './phoenixaggr'
+import { loadAllTiles, getTile } from './tilesaggr'
+import { PHOENIX_DIR, loadAllFires } from './phoenixaggr'
+import { connectRedisClient, loadPopulation, getPopulationSets } from './redis'
 
 /**
  * MATSim Networks
@@ -51,7 +52,7 @@ phoenixdict["20181109_mountalex_evac_ffdi100d_grid.shp.json"] =
   "https://cloudstor.aarnet.edu.au/plus/s/W0lk21g3Ry9Wnqs/download?path=%2Fphoenix%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi100d_grid.shp.json"
 
 function startServer(port) {
-  return new Promise(function(resolve, reject){
+  return new Promise(function (resolve, reject) {
     var app = express();
     app.use(cors());
     app.use(bodyParser.urlencoded({ extended: false }));
@@ -73,19 +74,37 @@ async function main3() {
   const server = await startServer(port);
   console.log("Ready and serving the tiles at http://localhost:%s", port);
 
+  // initialise connection to redis server and load population to redis
+  connectRedisClient();
+  loadPopulation();
+
   // Set up some HTTP GET handlers
   // Serve index.html if nothing specified
-  server.get('/', function(req, res){
+  server.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
   });
   // Don't have a favicon
   server.get('/favicon.ico', (req, res) => res.status(204));
 
   // wake the server
-  server.get('/wake/please', function(req, res){
+  server.get('/wake/please', function (req, res) {
     res.send("OK");
   });
 
+  // Get population sets from redis based on activity
+  server.get('/get-population', function (req, res) {
+    console.log(req.body);
+
+    getPopulationSets(req.body).then(function (data, err) {
+      if (err)
+        console.log('ERROR: ', err);
+      else {
+        res.send(data);
+      }
+    });
+  });
+
+  // save settings from UI and generate config,json file
   server.post('/save-settings', function (req, res) {
     fs.writeFileSync("./../scripts/config.json", JSON.stringify(req.body.config, null, 4), function (err) {
       if (err) {
@@ -116,11 +135,11 @@ async function main3() {
   });
 
   // Serve the requested file (needed to get style.json)
-  server.get('/:file', function(req, res){
+  server.get('/:file', function (req, res) {
     res.sendFile(__dirname + '/' + req.params.file);
   });
   // Serve the requested phoenix file (needed to get style.json)
-  server.get('/'+PHOENIX_DIR+'/:file', function(req, res){
+  server.get('/' + PHOENIX_DIR + '/:file', function (req, res) {
     res.sendFile(__dirname + '/' + PHOENIX_DIR + '/' + req.params.file);
   });
 
@@ -129,14 +148,14 @@ async function main3() {
     const x = parseInt(req.params.x);
     const y = parseInt(req.params.y);
     const z = parseInt(req.params.z);
-    console.log("zxy[%d,%d,%d] ", z,x,y);
-    getTile(req.params.layer, z, x, y).then(function(data) {
+    console.log("zxy[%d,%d,%d] ", z, x, y);
+    getTile(req.params.layer, z, x, y).then(function (data) {
       const headers = data[0];
       const img = data[1];
       console.log(headers);
       res.set(headers);
       res.send(img);
-    },function(err) {
+    }, function (err) {
       console.log(err);
       res.status(404)
       res.send(err.message);
@@ -144,7 +163,7 @@ async function main3() {
     });
   });
   // Catch-all for the rest
-  server.get('*', function(req, res){
+  server.get('*', function (req, res) {
     res.send('what???', 404);
   });
 
