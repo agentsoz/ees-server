@@ -7,7 +7,7 @@ var pythonShell = require('python-shell');
 
 import { loadAllTiles, getTile } from './tilesaggr'
 import { PHOENIX_DIR, loadAllFires } from './phoenixaggr'
-import { connectRedisClient, loadPopulation, getPopulationSets } from './redis'
+import { connectRedisClient, loadPopulation, getPopulationSets, getPopulationStream } from './redis'
 
 /**
  * MATSim Networks
@@ -93,15 +93,7 @@ async function main3() {
 
   // Get population sets from redis based on activity
   server.get('/get-population', function (req, res) {
-    console.log(req.body);
-
-    getPopulationSets(req.body).then(function (data, err) {
-      if (err)
-        console.log('ERROR: ', err);
-      else {
-        res.send(data);
-      }
-    });
+    getPopulationStream(req.body).pipe(res);
   });
 
   // save settings from UI and generate config,json file
