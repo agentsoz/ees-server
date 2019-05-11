@@ -105,7 +105,7 @@ async function main3() {
       if (err) {
         console.log(err);
       }
-      }
+    }
     );
 
     var options = {
@@ -126,7 +126,7 @@ async function main3() {
 
     var results = [];
 
-    pythonShell.PythonShell.run("build-scenario-v2.py", options, function(
+    pythonShell.PythonShell.run("build-scenario-v2.py", options, function (
       err,
       res1
     ) {
@@ -138,7 +138,7 @@ async function main3() {
     res.send("File Saved!");
   });
 
-  server.post("/create-simulation", function(req, res) {
+  server.post("/create-simulation", function (req, res) {
     var scenarioPath = "./../scripts/output/surf-coast-shire/test/";
     var userDir = "./../scripts/output/surf-coast-shire/";
     var dist = "./../../ees/target/ees-2.1.1-SNAPSHOT.jar";
@@ -152,7 +152,7 @@ async function main3() {
     // Read number of agents from config xml
     var parser = new xml2js.Parser();
 
-    fs.readFile(fileMain, function(err, data) {
+    fs.readFile(fileMain, function (err, data) {
       parser.parseString(data, function (err, res2) {
         if (err && err.exitCode != 0)
           console.log("Could not build simulation: " + err);
