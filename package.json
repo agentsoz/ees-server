@@ -48,7 +48,13 @@
     "event-stream": "^3.3.4",
     "exec": "^0.2.1",
     "express": "^4.16.3",
+    "georedis": "^3.1.1",
     "global-mercator": "^3.0.3",
+    "multistream": "^2.1.1",
+    "redis": "^2.8.0",
+    "redis-streams": "^1.1.0",
+    "underscore": "^1.9.1",
+    "xml-stream": "^0.4.5"
     "path": "^0.12.7",
     "python-shell": "^1.0.7",
     "xml2js": "^0.4.19"
