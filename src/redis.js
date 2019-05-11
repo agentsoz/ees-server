@@ -3,15 +3,12 @@ const fs = require('fs');
 const _ = require('underscore');
 const zlib = require('zlib');
 const xmlStream = require('xml-stream');
+require('redis-streams')(redis);
+var multiStream = require('multistream');
 
 var redisClient = null
 
-var activities_home = [];
-var activities_work = [];
-var activities_shops = [];
-var activities_beach = [];
-var activities_other = [];
-var activities_end = [];
+var all_activities = {};
 
 export function connectRedisClient() {
     redisClient = redis.createClient();
@@ -23,12 +20,17 @@ export function connectRedisClient() {
 
 // Filter xml population file to set and add them to redis
 export function loadPopulation() {
-    redisClient.del('activities_end');
-    redisClient.del('activities_other');
-    redisClient.del('activities_beach');
-    redisClient.del('activities_shops');
-    redisClient.del('activities_home');
-    redisClient.del('activities_work');
+
+    // delete all sets
+    redisClient.keys('*', function (err, keys) {
+        if (err)
+            console.log(err);
+        else {
+            keys.filter(function (key) {
+                deleteSet(key);
+            });
+        }
+    });
 
     var xml = null;
     try {
@@ -45,12 +47,14 @@ export function loadPopulation() {
 
         // After xml stream ends add activity sets to redis
         xml.on('end', function () {
-            addSet('activities_home', activities_home);
-            addSet('activities_work', activities_work);
-            addSet('activities_shops', activities_shops);
-            addSet('activities_beach', activities_beach);
-            addSet('activities_other', activities_other);
-            addSet('activities_end', activities_end);
+            // go through all keys in the map and add values to redis
+            Object.keys(all_activities).filter(function (key) {
+                setValues(key, all_activities[key][key]);
+
+                // delete object so we wouldn't keep holding it in memory
+                delete all_activities[key];
+
+            });
         });
 
     } catch (e) {
@@ -58,16 +62,38 @@ export function loadPopulation() {
     }
 }
 
-export function getPopulationSets({ setNames }) {
+export function getPopulationStream({ keys }) {
 
+    var activityStreamsArr = [];
+
+    // Collects an array of streams of requeseted activities 
+    keys.filter(function (key) {
+        activityStreamsArr.push(redisClient.readStream(key))
+    });
+
+    // runs array of multiple streams in sequence
+    var activityStreams = multiStream(activityStreamsArr);
+
+    activityStreams.on('end', function () {
+        console.log('multistream ended');
+    });
+
+    activityStreams.on('error', function () {
+        console.log('error reading multple streams array');
+    });
+
+    return activityStreams;
+}
+
+export function getPopulationSets({ keys }) {
     return new Promise(function (resolve, reject) {
         redisClient.multi()
-            .get(setNames[0])
-            .get(setNames[1])
-            .get(setNames[2])
-            .get(setNames[3])
-            .get(setNames[4])
-            .get(setNames[5])
+            .get(keys[0])
+            .get(keys[1])
+            .get(keys[2])
+            .get(keys[3])
+            .get(keys[4])
+            .get(keys[5])
             .exec(function (err, reply) {
                 if (err)
                     reject(err);
@@ -77,48 +103,51 @@ export function getPopulationSets({ setNames }) {
     });
 }
 
+// Add elements to activity redis lists
+function pushToRedisList(activity) {
+    _.filter(activity,
+        function (innerActivityObject) {
+            var activityJson = JSON.stringify(innerActivityObject);
+            var name = 'activities_' + innerActivityObject.type;
+            redisClient.rpush(name, activityJson, function (err, reply) {
+                if (err)
+                    console.log('Error adding ' + activity + ': ', err);
+            });
+        });
+}
+
+function deleteSet(key) {
+    redisClient.del(key, function (err, reply) {
+        if (err)
+            console.log(err)
+        else
+            console.log(key + ' deleted');
+    });
+}
+
 // Add a set to redis
-function addSet(name, set) {
+function setValues(key, set) {
     var setJson = JSON.stringify(set);
-    redisClient.set(name, setJson, function (err, reply) {
+    redisClient.set(key, setJson, function (err, reply) {
         if (reply)
-            console.log(name + ': ', reply);
+            console.log(key + ': ', reply);
         if (err)
-            console.log('Error adding ' + name + ': ', err);
+            console.log('Error adding ' + key + ': ', err);
     });
 }
 
-function pushToRedisList(name, list) {
-    var listJson = JSON.stringify(list);
-    redisClient.rpush(name, listJson, function (err, reply) {
-        if (err)
-            console.log('Error adding ' + name + ': ', err);
-    });
-}
-
-// Allocates activity to its appropriate set
+// Generates lists on the fly given the activities stream
 function processActivities(activity) {
     _.filter(activity,
         function (innerActivityObject) {
-            switch (innerActivityObject.type) {
-                case 'home':
-                    activities_home.push(innerActivityObject);
-                    break;
-                case 'work':
-                    activities_work.push(innerActivityObject);
-                    break;
-                case 'shops':
-                    activities_shops.push(innerActivityObject);
-                    break;
-                case 'beach':
-                    activities_beach.push(innerActivityObject);
-                    break;
-                case 'other':
-                    activities_other.push(innerActivityObject);
-                    break;
-                case 'end':
-                    activities_end.push(innerActivityObject);
-                    break;
+            // generate list key
+            var key = 'activities_' + innerActivityObject.type;
+            // if key does not exist, create a map on the fly using the key with an empty list value
+            if (!all_activities[key]) {
+                all_activities[key] = { [key]: [] };
             }
+
+            // push element to key's list
+            all_activities[key][key].push(innerActivityObject);
         });
 }
