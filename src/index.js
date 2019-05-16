@@ -138,7 +138,7 @@ async function main3() {
     res.send("File Saved!");
   });
 
-  server.post("/create-simulation", function (req, res) {
+  server.get("/create-simulation", function (req, res) {
     var scenarioPath = "./../scripts/output/surf-coast-shire/test/";
     var userDir = "./../scripts/output/surf-coast-shire/";
     var dist = "./../../ees/target/ees-2.1.1-SNAPSHOT.jar";
@@ -176,17 +176,16 @@ async function main3() {
         exec(cmd, (error, stdout, stderr) => {
           if (error) {
             console.error(`exec error: ${error}`);
-            return;
+            
+            res.send(error.message);
           }
           console.log(`stdout: ${stdout}`);
           console.log(`stderr: ${stderr}`);
+
+          res.send("Success!!");
         });
-        //return callback(null, results);
       });
     });
-
-    console.log("OK!");
-    res.send("Simulation Created!");
   });
 
   // Serve the requested file (needed to get style.json)
