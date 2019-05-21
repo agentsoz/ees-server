@@ -35,8 +35,12 @@ export function loadPopulation() {
     var xml = null;
     try {
         // Create stream from population gzip file
-        var readStream = fs.createReadStream('../../ees/test/output/io/github/agentsoz/ees/TypicalSummerWeekday50kTest/testTypicalSummerWeekday50k/matsim/output_plans.xml.gz')
+        var readStream = fs.createReadStream('../../ees-data/scenarios/surf-coast-shire/typical-summer-weekday-50k/scenario_matsim_plans.xml.gz')
             .pipe(zlib.createGunzip());
+
+        readStream.on('error', function (err) {
+            console.log('Error loading population xml: ', err);
+        });
 
         // Create xml stream and only retain activity tags
         xml = new xmlStream(readStream);
