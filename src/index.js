@@ -157,10 +157,7 @@ async function main3() {
         if (err && err.exitCode != 0)
           console.log("Could not build simulation: " + err);
 
-        //var nAgents = res2.simulation.bdiagents[0].trim();
-
         // Run the simulation
-        //var plotScript = path.join(distDir, "create-analysis-graphs.sh");
 
         var cmd =
           "java -Xmx4g -Xms4g -cp " +
