@@ -35,7 +35,7 @@ export function loadPopulation() {
     var xml = null;
     try {
         // Create stream from population gzip file
-        var readStream = fs.createReadStream('../../ees-data/scenarios/surf-coast-shire/typical-summer-weekday-50k/scenario_matsim_plans.xml.gz')
+        var readStream = fs.createReadStream('../../ees/scenarios/surf-coast-shire/typical-summer-weekday-50k/scenario_matsim_plans.xml.gz')
             .pipe(zlib.createGunzip());
 
         readStream.on('error', function (err) {

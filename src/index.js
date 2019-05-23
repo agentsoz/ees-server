@@ -101,7 +101,7 @@ async function main3() {
 
   // save settings from UI and generate config,json file
   server.post('/save-settings', function (req, res) {
-    fs.writeFileSync("./../../ees-data/scripts/config.json", JSON.stringify(req.body.config, null, 4), function (err) {
+    fs.writeFileSync("./../scripts/config.json", JSON.stringify(req.body.config, null, 4), function (err) {
       if (err) {
         console.log(err);
       }
@@ -110,14 +110,14 @@ async function main3() {
 
     var options = {
       mode: "text",
-      scriptPath: "./../../ees-data/scripts/",
+      scriptPath: "./../scripts/",
       args: [
         "-c",
-        "./../../ees-data/scripts/config.json",
+        "./../scripts/config.json",
         "-o",
-        "./../../ees-data/scripts/output/surf-coast-shire/",
+        "./../scripts/output/surf-coast-shire/",
         "-t",
-        "./../../ees-data/scripts/templates/",
+        "./../scripts/templates/",
         "-n",
         req.body.simulationName,
         "-v"
@@ -138,9 +138,9 @@ async function main3() {
     res.send("File Saved!");
   });
 
-  server.get("/create-simulation", function (req, res) {
-    var scenarioPath = "./../../ees-data/scripts/output/surf-coast-shire/test/";
-    var userDir = "./../../ees-data/scripts/output/surf-coast-shire/";
+  server.post("/create-simulation", function (req, res) {
+    var scenarioPath = "./../scripts/output/surf-coast-shire/" + req.body.simulationName.simulationName + "/";
+    var userDir = "./../scripts/output/surf-coast-shire/";
     var dist = "./../../ees/target/ees-2.1.1-SNAPSHOT.jar";
 
     var fileMain = path.join(scenarioPath, "ees.xml");
