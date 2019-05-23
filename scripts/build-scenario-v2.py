@@ -2,7 +2,7 @@
 
 # Example run:
 # python3 build-scenario-v2.py -c config.json -t scenarios/templates/ -o scenarios/surf-coast-shire -n town -v
-# Will create folder scenarios/surf-coast-shite/town.
+# Will create folder scenarios/surf-coast-shire/town.
 
 
 import sys
@@ -140,6 +140,7 @@ ees_replacements = {
     '${jAgents}': data['ees'][0]['bdi'][0]['jAgents'],
     '${jLogLevel}': data['ees'][0]['bdi'][0]['jLogLevel'],
     '${jLogFile}': data['ees'][0]['bdi'][0]['jLogFile'],
+    '${jOutFile}': data['ees'][0]['bdi'][0]['jOutFile'],
 
     '${outputDir}': data['ees'][0]['matsim'][0]['outputDir'],
     '${configXml}': data['ees'][0]['matsim'][0]['configXml'],
