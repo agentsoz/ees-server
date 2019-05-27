@@ -51,12 +51,13 @@
     "georedis": "^3.1.1",
     "global-mercator": "^3.0.3",
     "multistream": "^2.1.1",
+    "path": "^0.12.7",
+    "proj4": "^2.5.0",
+    "python-shell": "^1.0.7",
     "redis": "^2.8.0",
     "redis-streams": "^1.1.0",
     "underscore": "^1.9.1",
     "xml-stream": "^0.4.5",
-    "path": "^0.12.7",
-    "python-shell": "^1.0.7",
     "xml2js": "^0.4.19"
   },
   "now": {

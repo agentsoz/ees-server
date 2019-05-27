@@ -1,14 +1,23 @@
+import { isEmpty } from '@mapbox/tilelive/lib/stream-util';
+
 const redis = require('redis');
 const fs = require('fs');
 const _ = require('underscore');
 const zlib = require('zlib');
 const xmlStream = require('xml-stream');
 require('redis-streams')(redis);
-var multiStream = require('multistream');
+const multiStream = require('multistream');
+var proj4 = require('proj4');
+var inputProj = proj4('+proj=utm +zone=55 +south +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
+var outputProj = proj4('EPSG:4326');
 
 var redisClient = null
 
 var all_activities = {};
+var networkNodes = {};
+var networkLinks = {};
+var timeStamps = {};
+var personIDs = {};
 
 export function connectRedisClient() {
     redisClient = redis.createClient();
@@ -154,4 +163,133 @@ function processActivities(activity) {
             // push element to key's list
             all_activities[key][key].push(innerActivityObject);
         });
+}
+
+//creates lookup table for links
+export function getOutputNetwork() {
+
+    var xml = null;
+    try {
+        // Create stream from population gzip file
+        var readStream = fs.createReadStream('../../ees/test/output/io/github/agentsoz/ees/TypicalSummerWeekday50kTest/testTypicalSummerWeekday50k/matsim/output_network.xml.gz')
+            .pipe(zlib.createGunzip());
+
+        readStream.on('error', function (err) {
+            console.log('Error loading population xml: ', err);
+        });
+
+        // Create xml stream and only retain activity tags
+        xml = new xmlStream(readStream);
+        xml.collect('node');
+        xml.on('endElement: node', function (node) {
+            _.filter(node, function (innerNode) {
+                networkNodes[innerNode.id] = [parseInt(innerNode.x), parseInt(innerNode.y)];
+            });
+        });
+
+        xml.on('end', function () {
+            getOutputNetworkLinks();
+        });
+
+    } catch (e) {
+        console.log('Error reading xml: ', e.stack);
+    }
+}
+
+function getOutputNetworkLinks() {
+    var xml = null;
+    try {
+        // Create stream from population gzip file
+        var readStream = fs.createReadStream('../../ees/test/output/io/github/agentsoz/ees/TypicalSummerWeekday50kTest/testTypicalSummerWeekday50k/matsim/output_network.xml.gz')
+            .pipe(zlib.createGunzip());
+
+        readStream.on('error', function (err) {
+            console.log('Error loading population xml: ', err);
+        });
+
+        // Create xml stream and only retain activity tags
+        xml = new xmlStream(readStream);
+        xml.collect('link');
+        xml.on('endElement: link', function (link) {
+            _.filter(link, function (innerLink) {
+                //convert long and lat from EPSG:4326 to EPSG:28355 
+                networkLinks[innerLink.id] = [
+                    proj4(inputProj, outputProj, networkNodes[innerLink.from]),
+                    proj4(inputProj, outputProj, networkNodes[innerLink.to])
+                ];
+            });
+        });
+
+        xml.on('end', function () {
+            getOutputEvents();
+        });
+
+    } catch (e) {
+        console.log('Error reading xml: ', e.stack);
+    }
+}
+
+function getOutputEvents() {
+    var xml = null;
+    try {
+        // Create stream from population gzip file
+        var readStream = fs.createReadStream('../../ees/test/output/io/github/agentsoz/ees/TypicalSummerWeekday50kTest/testTypicalSummerWeekday50k/matsim/output_events.xml.gz')
+            .pipe(zlib.createGunzip());
+
+        readStream.on('error', function (err) {
+            console.log('Error loading population xml: ', err);
+        });
+
+        readStream.on('end', function () {
+            console.log("Done streaming!");
+        });
+
+
+        // Create xml stream and only retain activity tags
+        xml = new xmlStream(readStream);
+        // xml.collect('event');
+        // var eventTime = 0;
+        // var person = {};
+
+        // xml.on('endElement: event', function (event) {
+            // _.filter(event, function (innerEvent) {
+            //     if (parseInt(innerEvent.time) < 86341) {,
+            //         if (innerEvent.type == "left link") {
+            //             if (innerEvent.time != eventTime &
+            //                 !_.isEmpty(person)) {
+
+            //                 timeStamps[eventTime] = person;
+            //                 person = {};
+
+            //                 if (personIDs[vehicle] == null)
+            //                     personIDs[vehicle] = 1;
+            //             }
+
+            //             person[innerEvent.vehicle] = networkLinks[innerEvent.link];
+            //             eventTime = innerEvent.time;
+            //         }
+            //     }
+            //     else {
+            //         fs.writeFile('C:/Users/Mohamad/Desktop/Other stuff/Uni/Sem 1 2019/FYP/agent_events.js',
+            //         'export var agent_events =\n' +
+            //         JSON.stringify(timeStamps) + ';', function (err) {
+            //                 if (err)
+            //                     console.log(err);
+            //             });
+
+            //         console.log('closing');
+            //         xml.destroy();
+            //         readStream.destroy();
+            //     }
+            // });
+        // });
+
+
+        xml.on('end', function () {
+            console.log("The file was saved!");
+        });
+
+    } catch (e) {
+        console.log('Error reading xml: ', e.stack);
+    }
 }
