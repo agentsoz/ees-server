@@ -240,14 +240,10 @@ function getOutputEvents() {
             console.log('Error loading population xml: ', err);
         });
 
-        readStream.on('end', function () {
-            console.log("Done streaming!");
-        });
-
 
         // Create xml stream and only retain activity tags
         xml = new xmlStream(readStream);
-        // xml.collect('event');
+        xml.collect('event');
         // var eventTime = 0;
         // var person = {};
 
