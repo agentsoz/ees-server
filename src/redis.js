@@ -303,7 +303,7 @@ function getOutputEvents() {
             setValues('agents_startingPos', JSON.stringify(agents_startingPos));
 
             /* UNCOMMENT THIS BLOCK TO GENERATE AGENT DATA FILES*/
-            // fs.writeFile('C:/Users/Mohamad/Desktop/Other stuff/Uni/Sem 1 2019/FYP/agent_events.js',
+            // fs.writeFile('./agent_events.js',
             //     'export var agent_events =\n' +
             //     JSON.stringify(timeStamps) + ';', function (err) {
             //         if (err)
@@ -312,7 +312,7 @@ function getOutputEvents() {
             //             console.log("agent_events.js was saved!");
             //     });
 
-            //     fs.writeFile('C:/Users/Mohamad/Desktop/Other stuff/Uni/Sem 1 2019/FYP/agents_startingPos.js',
+            //     fs.writeFile('./agents_startingPos.js',
             //     'export var agents_startingPos =\n' +
             //     JSON.stringify(agents_startingPos) + ';', function (err) {
             //         if (err)
