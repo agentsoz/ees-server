@@ -115,18 +115,18 @@ export function getAgentsStartingPos() {
 
 export function getAgentsEvents() {
 
-    var agentsStartingPos = redisClient.readStream('agents_events');
+    var agentsEvents = redisClient.readStream('agents_events');
 
 
-    agentsStartingPos.on('end', function () {
+    agentsEvents.on('end', function () {
         console.log('agents_events stream ended');
     });
 
-    agentsStartingPos.on('error', function () {
+    agentsEvents.on('error', function () {
         console.log('error reading agents_events stream');
     });
 
-    return agentsStartingPos;
+    return agentsEvents;
 }
 
 export function getPopulationSets({ keys }) {
