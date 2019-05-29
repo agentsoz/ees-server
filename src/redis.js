@@ -102,11 +102,11 @@ export function getAgentsStartingPos() {
     var agentsStartingPos = redisClient.readStream('agents_startingPos');
 
 
-    activityStreams.on('end', function () {
+    agentsStartingPos.on('end', function () {
         console.log('agents_startingPos stream ended');
     });
 
-    activityStreams.on('error', function () {
+    agentsStartingPos.on('error', function () {
         console.log('error reading agents_startingPos stream');
     });
 
@@ -118,11 +118,11 @@ export function getAgentsEvents() {
     var agentsStartingPos = redisClient.readStream('agents_events');
 
 
-    activityStreams.on('end', function () {
+    agentsStartingPos.on('end', function () {
         console.log('agents_events stream ended');
     });
 
-    activityStreams.on('error', function () {
+    agentsStartingPos.on('error', function () {
         console.log('error reading agents_events stream');
     });
 

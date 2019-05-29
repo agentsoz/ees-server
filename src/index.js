@@ -10,7 +10,9 @@ const { exec } = require('child_process');
 
 import { loadAllTiles, getTile } from './tilesaggr'
 import { PHOENIX_DIR, loadAllFires } from './phoenixaggr'
-import { connectRedisClient, loadPopulation, getPopulationStream, getOutputNetwork } from './redis'
+import { connectRedisClient, loadPopulation,
+  getPopulationStream, getOutputNetwork,
+  getAgentsStartingPos, getAgentsEvents } from './redis'
 
 /**
  * MATSim Networks
