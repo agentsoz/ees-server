@@ -10,7 +10,9 @@ const { exec } = require('child_process');
 
 import { loadAllTiles, getTile } from './tilesaggr'
 import { PHOENIX_DIR, loadAllFires } from './phoenixaggr'
-import { connectRedisClient, loadPopulation, getPopulationSets, getPopulationStream } from './redis'
+import { connectRedisClient, loadPopulation,
+  getPopulationStream, getOutputNetwork,
+  getAgentsStartingPos, getAgentsEvents } from './redis'
 
 /**
  * MATSim Networks
@@ -81,6 +83,8 @@ async function main3() {
   connectRedisClient();
   loadPopulation();
 
+  getOutputNetwork();
+
   // Set up some HTTP GET handlers
   // Serve index.html if nothing specified
   server.get('/', function (req, res) {
@@ -97,6 +101,14 @@ async function main3() {
   // Get population sets from redis based on activity
   server.get('/get-population', function (req, res) {
     getPopulationStream(req.body).pipe(res);
+  });
+
+  server.get('/agents-start-pos', function (req, res) {
+    getAgentsStartingPos().pipe(res);
+  });
+
+  server.get('/agents-events', function (req, res) {
+    getAgentsEvents().pipe(res);
   });
 
   // save settings from UI and generate config,json file
