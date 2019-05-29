@@ -101,6 +101,14 @@ async function main3() {
     getPopulationStream(req.body).pipe(res);
   });
 
+  server.get('/agents-start-pos', function (req, res) {
+    getAgentsStartingPos().pipe(res);
+  });
+
+  server.get('/agents-events', function (req, res) {
+    getAgentsEvents().pipe(res);
+  });
+
   // save settings from UI and generate config,json file
   server.post('/save-settings', function (req, res) {
     fs.writeFileSync("./../scripts/config.json", JSON.stringify(req.body.config, null, 4), function (err) {

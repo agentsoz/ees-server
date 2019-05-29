@@ -17,7 +17,7 @@ var all_activities = {};
 var networkNodes = {};
 var networkLinks = {};
 var timeStamps = {};
-var personIDs = {};
+var agents_startingPos = {};
 
 export function connectRedisClient() {
     redisClient = redis.createClient();
@@ -44,8 +44,7 @@ export function loadPopulation() {
     var xml = null;
     try {
         // Create stream from population gzip file
-        var readStream = fs.createReadStream('../../ees/scenarios/surf-coast-shire/typical-summer-weekday-50k/scenario_matsim_plans.xml.gz')
-            .pipe(zlib.createGunzip());
+        var readStream = fs.createReadStream('../../ees/scenarios/surf-coast-shire/typical-summer-weekday-50k/scenario_matsim_plans.xml.gz');
 
         readStream.on('error', function (err) {
             console.log('Error loading population xml: ', err);
@@ -96,6 +95,38 @@ export function getPopulationStream({ keys }) {
     });
 
     return activityStreams;
+}
+
+export function getAgentsStartingPos() {
+
+    var agentsStartingPos = redisClient.readStream('agents_startingPos');
+
+
+    activityStreams.on('end', function () {
+        console.log('agents_startingPos stream ended');
+    });
+
+    activityStreams.on('error', function () {
+        console.log('error reading agents_startingPos stream');
+    });
+
+    return agentsStartingPos;
+}
+
+export function getAgentsEvents() {
+
+    var agentsStartingPos = redisClient.readStream('agents_events');
+
+
+    activityStreams.on('end', function () {
+        console.log('agents_events stream ended');
+    });
+
+    activityStreams.on('error', function () {
+        console.log('error reading agents_events stream');
+    });
+
+    return agentsStartingPos;
 }
 
 export function getPopulationSets({ keys }) {
@@ -240,49 +271,59 @@ function getOutputEvents() {
             console.log('Error loading population xml: ', err);
         });
 
-
         // Create xml stream and only retain activity tags
         xml = new xmlStream(readStream);
         xml.collect('event');
-        // var eventTime = 0;
-        // var person = {};
+        var eventTime = 0;
+        var person = {};
 
-        // xml.on('endElement: event', function (event) {
-            // _.filter(event, function (innerEvent) {
-            //     if (parseInt(innerEvent.time) < 86341) {,
-            //         if (innerEvent.type == "left link") {
-            //             if (innerEvent.time != eventTime &
-            //                 !_.isEmpty(person)) {
+        xml.on('endElement: event', function (event) {
+            _.filter(event, function (innerEvent) {
 
-            //                 timeStamps[eventTime] = person;
-            //                 person = {};
+                if (innerEvent.type == "left link") {
+                    if (innerEvent.time != eventTime &&
+                        !_.isEmpty(person)) {
 
-            //                 if (personIDs[vehicle] == null)
-            //                     personIDs[vehicle] = 1;
-            //             }
+                        timeStamps[eventTime] = person;
+                        person = {};
+                    }
 
-            //             person[innerEvent.vehicle] = networkLinks[innerEvent.link];
-            //             eventTime = innerEvent.time;
-            //         }
-            //     }
-            //     else {
-            //         fs.writeFile('C:/Users/Mohamad/Desktop/Other stuff/Uni/Sem 1 2019/FYP/agent_events.js',
-            //         'export var agent_events =\n' +
-            //         JSON.stringify(timeStamps) + ';', function (err) {
-            //                 if (err)
-            //                     console.log(err);
-            //             });
+                    person[innerEvent.vehicle] = networkLinks[innerEvent.link];
+                    eventTime = innerEvent.time;
 
-            //         console.log('closing');
-            //         xml.destroy();
-            //         readStream.destroy();
-            //     }
-            // });
-        // });
+                    if (agents_startingPos[innerEvent.vehicle] == null)
+                            agents_startingPos[innerEvent.vehicle] = networkLinks[innerEvent.link][0];
+                }
+            });
+        });
 
 
         xml.on('end', function () {
-            console.log("The file was saved!");
+            setValues('agents_events', JSON.stringify(timeStamps));
+            setValues('agents_startingPos', JSON.stringify(agents_startingPos));
+
+            /* UNCOMMENT THIS BLOCK TO GENERATE AGENT DATA FILES*/
+            // fs.writeFile('C:/Users/Mohamad/Desktop/Other stuff/Uni/Sem 1 2019/FYP/agent_events.js',
+            //     'export var agent_events =\n' +
+            //     JSON.stringify(timeStamps) + ';', function (err) {
+            //         if (err)
+            //             console.log(err);
+
+            //             console.log("agent_events.js was saved!");
+            //     });
+
+            //     fs.writeFile('C:/Users/Mohamad/Desktop/Other stuff/Uni/Sem 1 2019/FYP/agents_startingPos.js',
+            //     'export var agents_startingPos =\n' +
+            //     JSON.stringify(agents_startingPos) + ';', function (err) {
+            //         if (err)
+            //             console.log(err);
+
+            //             console.log("agents_startingPos.js was saved!");
+            //     });
+        });
+
+        xml.on('error', function (err) {
+            console.log('Error loading population xml: ', err);
         });
 
     } catch (e) {
