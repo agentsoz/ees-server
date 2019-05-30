@@ -8,7 +8,7 @@ const xmlStream = require('xml-stream');
 require('redis-streams')(redis);
 const multiStream = require('multistream');
 var proj4 = require('proj4');
-var inputProj = proj4('+proj=utm +zone=55 +south +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
+var inputProj = proj4('+proj=utm +zone=54 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
 var outputProj = proj4('EPSG:4326');
 
 var redisClient = null
@@ -303,23 +303,15 @@ function getOutputEvents() {
             setValues('agents_startingPos', JSON.stringify(agents_startingPos));
 
             /* UNCOMMENT THIS BLOCK TO GENERATE AGENT DATA FILES*/
-            // fs.writeFile('./agent_events.js',
-            //     'export var agent_events =\n' +
-            //     JSON.stringify(timeStamps) + ';', function (err) {
-            //         if (err)
-            //             console.log(err);
 
-            //             console.log("agent_events.js was saved!");
-            //     });
+                fs.writeFile('C:/Users/Mohamad/Desktop/Other stuff/Uni/Sem 1 2019/FYP/ees-ui/agents_startingPos.js',
+                'export var agents_startingPos =\n' +
+                JSON.stringify(agents_startingPos) + ';', function (err) {
+                    if (err)
+                        console.log(err);
 
-            //     fs.writeFile('./agents_startingPos.js',
-            //     'export var agents_startingPos =\n' +
-            //     JSON.stringify(agents_startingPos) + ';', function (err) {
-            //         if (err)
-            //             console.log(err);
-
-            //             console.log("agents_startingPos.js was saved!");
-            //     });
+                        console.log("agents_startingPos.js was saved!");
+                });
         });
 
         xml.on('error', function (err) {
