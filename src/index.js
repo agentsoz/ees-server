@@ -102,7 +102,7 @@ async function main3() {
 
   // Get population sets from redis based on activity
   server.post('/get-population', function (req, res) {
-    getPopulationStream(req.body.activities).pipe(res);
+    getPopulationStream(req.body.key).pipe(res);
   });
 
   server.get('/agents-start-pos', function (req, res) {
