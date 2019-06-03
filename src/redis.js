@@ -199,9 +199,8 @@ function processActivities(activity) {
                 },
                 "geometry": {
                     "type": "Point",
-                    "coordinates": [
-                        proj4(inputProj, outputProj, [parseInt(innerActivityObject.x), parseInt(innerActivityObject.y)]),
-                    ]
+                    "coordinates":
+                    proj4(inputProj, outputProj, [parseInt(innerActivityObject.x), parseInt(innerActivityObject.y)]),
                 }
             };
 

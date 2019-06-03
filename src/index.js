@@ -101,7 +101,7 @@ async function main3() {
   });
 
   // Get population sets from redis based on activity
-  server.get('/get-population', function (req, res) {
+  server.post('/get-population', function (req, res) {
     getPopulationStream(req.body.activities).pipe(res);
   });
 
