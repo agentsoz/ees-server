@@ -29,7 +29,6 @@ export function connectRedisClient() {
 
 // Filter xml population file to set and add them to redis
 export function loadPopulation() {
-
     // delete all sets
     redisClient.keys('*', function (err, keys) {
         if (err)
@@ -44,7 +43,8 @@ export function loadPopulation() {
     var xml = null;
     try {
         // Create stream from population gzip file
-        var readStream = fs.createReadStream('../../ees/scenarios/surf-coast-shire/typical-summer-weekday-50k/scenario_matsim_plans.xml.gz');
+        var readStream = fs.createReadStream('../../ees/scenarios/surf-coast-shire/typical-summer-weekday-50k/scenario_matsim_plans.xml.gz')
+            .pipe(zlib.createGunzip());
 
         readStream.on('error', function (err) {
             console.log('Error loading population xml: ', err);
@@ -74,8 +74,7 @@ export function loadPopulation() {
     }
 }
 
-export function getPopulationStream({ keys }) {
-
+export function getPopulationMultiStream(keys) {
     var activityStreamsArr = [];
 
     // Collects an array of streams of requeseted activities 
@@ -97,10 +96,22 @@ export function getPopulationStream({ keys }) {
     return activityStreams;
 }
 
+export function getPopulationStream(key) {
+    var redisStream = redisClient.readStream(key);
+
+    redisStream.on('end', function () {
+        console.log('redis population stream ended');
+    });
+
+    redisStream.on('error', function () {
+        console.log('error reading multple streams array');
+    });
+
+    return redisStream;
+}
+
 export function getAgentsStartingPos() {
-
     var agentsStartingPos = redisClient.readStream('agents_startingPos');
-
 
     agentsStartingPos.on('end', function () {
         console.log('agents_startingPos stream ended');
@@ -191,8 +202,21 @@ function processActivities(activity) {
                 all_activities[key] = { [key]: [] };
             }
 
+            var feature =
+            {
+                "type": "Feature",
+                "properties": {
+                    "activity": innerActivityObject.type
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates":
+                        proj4(inputProj, outputProj, [parseInt(innerActivityObject.x), parseInt(innerActivityObject.y)]),
+                }
+            };
+
             // push element to key's list
-            all_activities[key][key].push(innerActivityObject);
+            all_activities[key][key].push(feature);
         });
 }
 
@@ -243,6 +267,7 @@ function getOutputNetworkLinks() {
         xml.collect('link');
         xml.on('endElement: link', function (link) {
             _.filter(link, function (innerLink) {
+
                 //convert long and lat from EPSG:4326 to EPSG:28355 
                 networkLinks[innerLink.id] = [
                     proj4(inputProj, outputProj, networkNodes[innerLink.from]),
@@ -292,7 +317,7 @@ function getOutputEvents() {
                     eventTime = innerEvent.time;
 
                     if (agents_startingPos[innerEvent.vehicle] == null)
-                            agents_startingPos[innerEvent.vehicle] = networkLinks[innerEvent.link][0];
+                        agents_startingPos[innerEvent.vehicle] = networkLinks[innerEvent.link][0];
                 }
             });
         });
@@ -304,14 +329,14 @@ function getOutputEvents() {
 
             /* UNCOMMENT THIS BLOCK TO GENERATE AGENT DATA FILES*/
 
-                fs.writeFile('C:/Users/Mohamad/Desktop/Other stuff/Uni/Sem 1 2019/FYP/ees-ui/agents_startingPos.js',
-                'export var agents_startingPos =\n' +
-                JSON.stringify(agents_startingPos) + ';', function (err) {
-                    if (err)
-                        console.log(err);
+            // fs.writeFile('C:/Users/Mohamad/Desktop/Other stuff/Uni/Sem 1 2019/FYP/ees-ui/agents_startingPos.js',
+            // 'export var agents_startingPos =\n' +
+            // JSON.stringify(agents_startingPos) + ';', function (err) {
+            //     if (err)
+            //         console.log(err);
 
-                        console.log("agents_startingPos.js was saved!");
-                });
+            //         console.log("agents_startingPos.js was saved!");
+            // });
         });
 
         xml.on('error', function (err) {
