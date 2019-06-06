@@ -16,7 +16,7 @@ var redisClient = null
 var all_activities = {};
 var networkNodes = {};
 var networkLinks = {};
-var timeStamps = {};
+var timeStampedEvents = {};
 var agents_startingPos = {};
 
 export function connectRedisClient() {
@@ -124,9 +124,9 @@ export function getAgentsStartingPos() {
     return agentsStartingPos;
 }
 
-export function getAgentsEvents() {
+export function getAgentsEvents(eventGroup) {
 
-    var agentsEvents = redisClient.readStream('agents_events');
+    var agentsEvents = redisClient.readStream(eventGroup);
 
 
     agentsEvents.on('end', function () {
@@ -300,7 +300,9 @@ function getOutputEvents() {
         xml = new xmlStream(readStream);
         xml.collect('event');
         var eventTime = 0;
+        var eventTimeInterval = 0;
         var person = {};
+        var i = 1;
 
         xml.on('endElement: event', function (event) {
             _.filter(event, function (innerEvent) {
@@ -309,10 +311,31 @@ function getOutputEvents() {
                     if (innerEvent.time != eventTime &&
                         !_.isEmpty(person)) {
 
-                        timeStamps[eventTime] = person;
+                        if ((innerEvent.time - eventTimeInterval >= 300)) {
+
+                            // Since we're storing events as a group for each ten minutes,
+                            // this would help us to keep track of when each ten minutes has passed.
+                            eventTimeInterval = innerEvent.time;
+
+                            // Save list to redis
+                            setValues('agents_events_' + i, JSON.stringify(timeStampedEvents));
+
+                            //reset map
+                            timeStampedEvents = {};
+
+                            i++;
+                        }
+
+                        timeStampedEvents[eventTime] = person;
+
+                        // Reset person map each time we reach a new time stamp
                         person = {};
                     }
 
+                    /* Gather a map of persons and the event they're taking at a certain timestamp.
+                    An event is basically a destination (the lat and long) to which the person will
+                    travel to at acertain time stamp.
+                    */
                     person[innerEvent.vehicle] = networkLinks[innerEvent.link];
                     eventTime = innerEvent.time;
 
@@ -324,7 +347,7 @@ function getOutputEvents() {
 
 
         xml.on('end', function () {
-            setValues('agents_events', JSON.stringify(timeStamps));
+            //setValues('agents_events', JSON.stringify(timeStampedEvents));
             setValues('agents_startingPos', JSON.stringify(agents_startingPos));
 
             /* UNCOMMENT THIS BLOCK TO GENERATE AGENT DATA FILES*/

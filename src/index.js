@@ -109,8 +109,9 @@ async function main3() {
     getAgentsStartingPos().pipe(res);
   });
 
-  server.get('/agents-events', function (req, res) {
-    getAgentsEvents().pipe(res);
+  server.post('/agents-events', function (req, res) {
+    console.log(req.body.eventGroup);
+    getAgentsEvents(req.body.eventGroup).pipe(res);
   });
 
   // save settings from UI and generate config,json file
