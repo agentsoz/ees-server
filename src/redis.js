@@ -289,7 +289,7 @@ function getOutputEvents() {
     var xml = null;
     try {
         // Create stream from population gzip file
-        var readStream = fs.createReadStream('../../ees/test/output/io/github/agentsoz/ees/TypicalSummerWeekday50kTest/testTypicalSummerWeekday50k/matsim/output_events.xml.gz')
+        var readStream = fs.createReadStream('../../ees/test/output/io/github/agentsoz/ees/TypicalSummerWeekday500Test/testTypicalSummerWeekday500/matsim/output_events.xml.gz')
             .pipe(zlib.createGunzip());
 
         readStream.on('error', function (err) {
