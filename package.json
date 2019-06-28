@@ -37,7 +37,7 @@
     "style-loader": "^0.23.0",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.1",
-    "webpack-dev-server": "^3.1.9",
+    "webpack-dev-server": "^3.3.1",
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
@@ -46,8 +46,19 @@
     "cors": "^2.8.4",
     "download": "^7.1.0",
     "event-stream": "^3.3.4",
+    "exec": "^0.2.1",
     "express": "^4.16.3",
-    "global-mercator": "^3.0.3"
+    "georedis": "^3.1.1",
+    "global-mercator": "^3.0.3",
+    "multistream": "^2.1.1",
+    "path": "^0.12.7",
+    "proj4": "^2.5.0",
+    "python-shell": "^1.0.7",
+    "redis": "^2.8.0",
+    "redis-streams": "^1.1.0",
+    "underscore": "^1.9.1",
+    "xml-stream": "^0.4.5",
+    "xml2js": "^0.4.19"
   },
   "now": {
     "public": true,
