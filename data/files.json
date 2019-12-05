@@ -1,0 +1,157 @@
+{
+  "name": "EES Server Data Files",
+  "phoenix_fires": [
+    {
+      "display_name": "20181109_mountalex_evac_ffdi50a_grid",
+      "ignition_hhmm": "1300",
+      "description": "Ignition at 1300 hrs, running till 2300 hrs. Grass fuel load of 3T/ha endorsed by the Safer Together Working Group as most appropriate for Loddon Mallee",
+      "tags": [
+        "Mount Alexander Shire",
+        "FFDI50"
+      ],
+      "url": "https://cloudstor.aarnet.edu.au/plus/s/sLWXqF66htC0MfQ/download?path=%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi50a_grid.shp.json"
+    },
+    {
+      "display_name": "20181109_mountalex_evac_ffdi50b_grid",
+      "ignition_hhmm": "1300",
+      "description": "Ignition at 1300 hrs, running till 2300 hrs. Grass fuel load of 3T/ha endorsed by the Safer Together Working Group as most appropriate for Loddon Mallee",
+      "tags": [
+        "Mount Alexander Shire",
+        "FFDI50"
+      ],
+      "url": "https://cloudstor.aarnet.edu.au/plus/s/sLWXqF66htC0MfQ/download?path=%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi50b_grid.shp.json"
+    },
+    {
+      "display_name": "20181109_mountalex_evac_ffdi50c_grid",
+      "ignition_hhmm": "1300",
+      "description": "Ignition at 1300 hrs, running till 2300 hrs. Grass fuel load of 3T/ha endorsed by the Safer Together Working Group as most appropriate for Loddon Mallee",
+      "tags": [
+        "Mount Alexander Shire",
+        "FFDI50"
+      ],
+      "url": "https://cloudstor.aarnet.edu.au/plus/s/sLWXqF66htC0MfQ/download?path=%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi50c_grid.shp.json"
+    },
+    {
+      "display_name": "20181109_mountalex_evac_ffdi50d_grid",
+      "ignition_hhmm": "1300",
+      "description": "Ignition at 1300 hrs, running till 2300 hrs. Grass fuel load of 3T/ha endorsed by the Safer Together Working Group as most appropriate for Loddon Mallee",
+      "tags": [
+        "Mount Alexander Shire",
+        "FFDI50"
+      ],
+      "url": "https://cloudstor.aarnet.edu.au/plus/s/sLWXqF66htC0MfQ/download?path=%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi50d_grid.shp.json"
+    },
+    {
+      "display_name": "20181109_mountalex_evac_ffdi75a_grid",
+      "ignition_hhmm": "1300",
+      "description": "Ignition at 1300 hrs, running till 2300 hrs. Grass fuel load of 3T/ha endorsed by the Safer Together Working Group as most appropriate for Loddon Mallee",
+      "tags": [
+        "Mount Alexander Shire",
+        "FFDI75"
+      ],
+      "url": "https://cloudstor.aarnet.edu.au/plus/s/sLWXqF66htC0MfQ/download?path=%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi75a_grid.shp.json"
+    },
+    {
+      "display_name": "20181109_mountalex_evac_ffdi75b_grid",
+      "ignition_hhmm": "1300",
+      "description": "Ignition at 1300 hrs, running till 2300 hrs. Grass fuel load of 3T/ha endorsed by the Safer Together Working Group as most appropriate for Loddon Mallee",
+      "tags": [
+        "Mount Alexander Shire",
+        "FFDI75"
+      ],
+      "url": "https://cloudstor.aarnet.edu.au/plus/s/sLWXqF66htC0MfQ/download?path=%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi75b_grid.shp.json"
+    },
+    {
+      "display_name": "20181109_mountalex_evac_ffdi75c_grid",
+      "ignition_hhmm": "1300",
+      "description": "Ignition at 1300 hrs, running till 2300 hrs. Grass fuel load of 3T/ha endorsed by the Safer Together Working Group as most appropriate for Loddon Mallee",
+      "tags": [
+        "Mount Alexander Shire",
+        "FFDI75"
+      ],
+      "url": "https://cloudstor.aarnet.edu.au/plus/s/sLWXqF66htC0MfQ/download?path=%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi75c_grid.shp.json"
+    },
+    {
+      "display_name": "20181109_mountalex_evac_ffdi75d_grid",
+      "ignition_hhmm": "1300",
+      "description": "Ignition at 1300 hrs, running till 2300 hrs. Grass fuel load of 3T/ha endorsed by the Safer Together Working Group as most appropriate for Loddon Mallee",
+      "tags": [
+        "Mount Alexander Shire",
+        "FFDI75"
+      ],
+      "url": "https://cloudstor.aarnet.edu.au/plus/s/sLWXqF66htC0MfQ/download?path=%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi75d_grid.shp.json"
+    },
+    {
+      "display_name": "20181109_mountalex_evac_ffdi100a_grid",
+      "ignition_hhmm": "1300",
+      "description": "Ignition at 1300 hrs, running till 2300 hrs. Grass fuel load of 3T/ha endorsed by the Safer Together Working Group as most appropriate for Loddon Mallee",
+      "tags": [
+        "Mount Alexander Shire",
+        "FFDI100"
+      ],
+      "url": "https://cloudstor.aarnet.edu.au/plus/s/sLWXqF66htC0MfQ/download?path=%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi100a_grid.shp.json"
+    },
+    {
+      "display_name": "20181109_mountalex_evac_ffdi100b_grid",
+      "ignition_hhmm": "1300",
+      "description": "Ignition at 1300 hrs, running till 2300 hrs. Grass fuel load of 3T/ha endorsed by the Safer Together Working Group as most appropriate for Loddon Mallee",
+      "tags": [
+        "Mount Alexander Shire",
+        "FFDI100"
+      ],
+      "url": "https://cloudstor.aarnet.edu.au/plus/s/sLWXqF66htC0MfQ/download?path=%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi100b_grid.shp.json"
+    },
+    {
+      "display_name": "20181109_mountalex_evac_ffdi100c_grid",
+      "ignition_hhmm": "1300",
+      "description": "Ignition at 1300 hrs, running till 2300 hrs. Grass fuel load of 3T/ha endorsed by the Safer Together Working Group as most appropriate for Loddon Mallee",
+      "tags": [
+        "Mount Alexander Shire",
+        "FFDI100"
+      ],
+      "url": "https://cloudstor.aarnet.edu.au/plus/s/sLWXqF66htC0MfQ/download?path=%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi100c_grid.shp.json"
+    },
+    {
+      "display_name": "20181109_mountalex_evac_ffdi100d_grid",
+      "ignition_hhmm": "1300",
+      "description": "Ignition at 1300 hrs, running till 2300 hrs. Grass fuel load of 3T/ha endorsed by the Safer Together Working Group as most appropriate for Loddon Mallee",
+      "tags": [
+        "Mount Alexander Shire",
+        "FFDI100"
+      ],
+      "url": "https://cloudstor.aarnet.edu.au/plus/s/sLWXqF66htC0MfQ/download?path=%2Fmount-alexander-shire&files=20181109_mountalex_evac_ffdi100d_grid.shp.json"
+    },
+    {
+      "display_name": "Anglesea_evac_test_ffdi104_phx5_2016data_minsup_fh2017_grid",
+      "ignition_hhmm": "1300",
+      "description": "Ignition at 1300 hrs, running till 2300 hrs",
+      "tags": [
+        "Surf Coast Shire",
+        "FFDI100"
+      ],
+      "url": "https://cloudstor.aarnet.edu.au/plus/s/sLWXqF66htC0MfQ/download?path=%2Fsurf-coast-shire&files=Anglesea_evac_test_ffdi104_phx5_2016data_minsup_fh2017_grid.shp.json"
+    }
+  ],
+  "matsim_populations": [
+    {
+      "display_name": "Castlemaine Archetypes 10,867 Persons",
+      "description": "Census population of Castlemaine SA2 and Castlemaine Region SA2 with 10,867 persons, all at home locations, with no daily activities",
+      "crs": "EPSG:28355",
+      "url": "https://cloudstor.aarnet.edu.au/plus/s/sLWXqF66htC0MfQ/download?path=%2Fmount-alexander-shire&files=population-archetypes.xml.gz",
+      "tags": [
+        "Mount Alexander Shire",
+        "Archetypes"
+      ]
+    },
+    {
+      "display_name": "Anglesea Weekday 10,000 Persons",
+      "description": "Anglesea weekday population of 10,000 persons, including several subgroups and their daily activities",
+      "crs": "EPSG:32754",
+      "url": "https://cloudstor.aarnet.edu.au/plus/s/sLWXqF66htC0MfQ/download?path=%2Fsurf-coast-shire&files=Anglesea_Weekday_10000_persons.xml.gz",
+      "tags": [
+        "Surf Coast Shire",
+        "Activity-Based"
+      ]
+    }
+  ]
+}
