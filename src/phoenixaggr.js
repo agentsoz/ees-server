@@ -1,5 +1,5 @@
 const fs = require('fs');
-import { downloadResource } from './util';
+import { downloadGeojson } from './util';
 
 export const PHOENIX_DIR = "phoenix";
 
@@ -16,10 +16,10 @@ export async function loadAllFires(fires) {
 
       // Fetch geojson from cloud storage given url and destination
       try {
-        await downloadResource(fire.url, PHOENIX_DIR, file)
+        await downloadGeojson(fire.url, PHOENIX_DIR, file)
         phoenix_dict[fire.display_name] = fire;
       } catch(e) {
-        console.log(error);
+        console.log(e);
       }
 
     } else {
