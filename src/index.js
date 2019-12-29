@@ -6,17 +6,32 @@ var cors = require('cors')
 import {loadAllTiles, getTile} from './tilesaggr'
 import { PHOENIX_DIR, loadAllFires} from './phoenixaggr'
 import { POPULATION_DIR, loadAllPopulations} from './populationaggr'
+import { OUTPUT_DIR, loadAllOutput } from './outputaggr'
 import files from '../data/files.json';
 
 var DATA_DIR = "data";
+var OUPUT_DIR = "output";
+
+// output dumps, should be dynamic and persistently stored
+var outputs = {
+  "surf_coast_shire_10k": {
+    "name": "Surf Coast Shire Population Subgroups",
+    "region": "mount-alexander-shire",
+    "download": "https://cloudstor.aarnet.edu.au/plus/s/acHeZXMghKG358D/download",
+    "archive": "SurfCoastShirePopulationSubgroupsTest.tgz"
+  }
+};
+
 
 var phoenixdict = {};
 var populationdict = {};
+var outputdict = {};
 
 async function loadFromFile(url) {
   // data.json should contain all fires and population data
   phoenixdict = await loadAllFires(files.phoenix_fires)
   populationdict = await loadAllPopulations(files.matsim_populations)
+  outputdict = await loadAllOutput(outputs)
 }
 
 /**
@@ -73,10 +88,12 @@ async function main3() {
     res.send({
       "tiles": tiledict,
       "fires": phoenixdict,
-      "populations": populationdict
+      "populations": populationdict,
+      "outputs": outputdict
     });
   });
 
+  // used to wake the free hosting service used for this server
   server.get('/wake/please', function(req, res){
     res.send("OK");
   });
@@ -96,6 +113,11 @@ async function main3() {
   // Serve the requested population file
   server.get('/'+POPULATION_DIR+'/:file', function(req, res){
     res.sendFile(__dirname + '/' + POPULATION_DIR + '/' + req.params.file);
+  });
+  // Serve the requested output file
+  server.get('/'+OUTPUT_DIR+'/:file', function(req, res){
+    res.sendFile(__dirname + '/' + OUTPUT_DIR + '/' + req.params.file);
+    // these are generated using python
   });
 
   // Handle something like: /tiles/matsim/zoom/lon/lat
