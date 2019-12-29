@@ -1,0 +1,112 @@
+import csv
+import json
+from pyproj import Proj, transform
+
+
+
+outProj = Proj(init='epsg:4326')
+
+with open("entered_link_minute_coord_fast.csv",'w') as out:
+    w = csv.writer(out, delimiter=',')
+    for i in range(0, len(frames)):
+        for key in frames[i]:
+            nodeid = links[frames[i][key]]
+            x1,y1 =   nodes[nodeid][0], nodes[nodeid][1]
+            x2,y2 = inProj(x1,y1, inverse=True)
+            w.writerow([i, key, x2,y2])
+
+'data': {
+	'type': 'FeatureCollection',
+	'features': [
+	    {
+		// feature for Mapbox DC
+		'type': 'Feature',
+		'geometry': {
+		    'type': 'Point',
+		    'coordinates': [
+			-77.03238901390978,
+			38.913188059745586
+			]
+		    },
+		'properties': {
+		    'title': 'Mapbox DC',
+		    'icon': 'monument'
+		    }
+		},
+	    {
+		// feature for Mapbox SF
+		'type': 'Feature',
+		'geometry': {
+		    'type': 'Point',
+		    'coordinates': [-122.414, 37.776]
+		    },
+		'properties': {
+		    'title': 'Mapbox SF',
+		    'icon': 'harbor'
+		    }
+		}
+	    ]
+	}
+
+
+feature = {
+'type':'Feature',
+'geometry': {
+'type': 'Point',
+'coordinates':[]
+}
+}
+
+inProj = Proj(init='epsg:32754')
+geoframes=[]
+for i in range(0, len(frames)):
+    features = []
+    for key in frames[i]:
+            f = deepcopy(feature)
+            nodeid = links[frames[i][key]]
+            x1,y1 =   nodes[nodeid][0], nodes[nodeid][1]
+            x2,y2 = inProj(x1,y1, inverse=True)
+            f['geometry']['coordinates'] = [x2,y2]
+            features.append(f)
+    geoframes.append({'type':'FeatureCollection',
+'features': features})
+
+with open('link_entry_frames_vehicle_track.json','w') as out:
+    json.dump(geoframes, out)
+
+
+l=[]
+with open("entered_link_min.csv", 'r') as file:
+    r = csv.reader(file);
+    for row in r:
+	l.append([row[0], row[1], row[2]])
+
+frames=[]
+framesize=60 # seconds
+j=0
+for i in range(0, int(24*60 * 60 / framesize)):
+    f={}
+    while j<len(l) and i*framesize > int(float(l[j][0])):
+	f[l[j][1]] = l[j][2]
+	j+=1
+    frames.append(f)
+
+# keep people until they leave their vehicle
+l=[]
+with open("entered_link_vehicle_track.csv", 'r') as file:
+    r = csv.reader(file);
+    for row in r:
+	l.append([row[0], row[1], row[2]])
+
+frames=[]
+framesize=60 # seconds
+j=0
+f={}
+for i in range(0, int(24*60 * 60 / framesize)):
+    while j<len(l) and i*framesize > int(float(l[j][0])):
+	if l[j][2] in (None, ""): # this vehicle has been left/parked
+	    if l[j][1] in f: del f[l[j][1]]
+	else:
+	    f[l[j][1]] = l[j][2]
+	j+=1
+    frames.append(f.copy())
