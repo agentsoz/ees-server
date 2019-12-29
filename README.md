@@ -20,6 +20,16 @@ Check that `npm` is now installed by trying `npm -v`.
 
 
 ### How to build
+You must first run a production server to allow the ees-server to download
+any phoenix, population and output resources without interruption/rebooting
+triggered by nodemon upon detecting file changes.
+```
+npm run build && npm start
+
+```
+After the server has downloaded all phoenix, population and output resources,
+you may run it in dev mode.
+
 
 For a dev build that will build and run the server locally, as well as watch for changes (while you code) and automatically reload build and reload the server:
 ```
