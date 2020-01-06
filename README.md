@@ -20,6 +20,12 @@ Check that `npm` is now installed by trying `npm -v`.
 
 
 ### How to build
+
+To setup all dependencies do:
+```
+npm install
+```
+
 You must first run a production server to allow the ees-server to download
 any phoenix, population and output resources without interruption/rebooting
 triggered by nodemon upon detecting file changes.
