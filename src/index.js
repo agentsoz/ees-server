@@ -124,6 +124,6 @@ async function main3() {
 
 }
 
-loadFromFile("http://localhost:12345/data/files.json")
+loadFromFile("http://localhost:12345/data/files.json")  
 main3();
 
