@@ -12,4 +12,4 @@ RUN npm run-script build
 
 EXPOSE 80
 
-CMD [ "npm", "run", "server" ]
+CMD [ "npm", "run", "server" ] 

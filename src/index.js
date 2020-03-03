@@ -55,7 +55,7 @@ async function main3() {
   loadAllTiles(tiledict);
 
   // Start the express server
-  const port = 12345;
+  const port = process.env.PORT || 80;
   console.log("Starting the server on local port %d", port);
   const server = await startServer(port);
   console.log("Ready and serving the tiles at http://localhost:%s", port);
