@@ -78,7 +78,7 @@ async function main3() {
   });
 
   server.get('/wake/please', function(req, res){
-    res.send("OKZ");
+    res.send("OKZZ");
   });
 
   // Serve the requested file (needed to get style.json)
