@@ -1,5 +1,8 @@
 sudo: required
-language: bash
+language: node_js
+node_js:
+  - 11.6.0
+cache: npm
 env:
   global:
   - LIVE_SERVICE=ees-server-travis-service
@@ -10,8 +13,10 @@ env:
   - secure: lUG+qOiD3qXgb1btXnd9nJte3XAkQMO4T6y2275C+yYiOZ0hS1vjBzzbWvSb9YkVdXz3s/At4DQWgQgYUCGMCywp4Cg5HWWSOxEPdRpcPs8lCEQxcyzESV1Xf5mjuz/5VQg/oHlb025etqjjaHRK665KuRTs7dtV7DsWOhFGrf85f7FoGNJvEuZsL2pz3oWNGUm+PTHVRH2cNfFgXdxCjRjHBNDbc4Ih2BoEy6GGqD1l4Y4jcjuhUIexTwreyFdNpxjNSoo9GeFGeabdB+QClRGTvF7GEOrCUp4lrNZlAT4N0t5jKNhe3XMn2OJ+h8j70iQwojVwDLpizPGoWd7h/ktoB6YRcJGFINVi0+E/4jvy8a4F8dxjdUY97pkezvQJdGg5F0UP+OsHS5+XkCAgOY6Jd/KIUVkgOWu//9IaTu0/KVB0vVc5AkzMqYnTr94knePt87pMZ5BFpoRXSrz6v5cXO2/8/Klh3II6rMIZc7j0RDT0042XfFzMznkfKiSlCiXUUHjdPh8zK1y9+Rb1vMGroyQm5qifEwzG/JRStMfNHXkfbZwXu2v1zcCZwg3G6b2tDN0u85CFsid2+X0uGM6H8NFlRwMCzo1wYNMKlvwHTPoj8eW6Frpoe67Uj1w5sSN+ogWifCXSbwcRbolLSsqPbN6VRLLd4unCurUvPfc=
 services:
 - docker
+install:
+- npm install
 script:
-- echo "trying without tests!"
+- npm test
 after_success:
 - bash docker-deploy/docker_push.sh
 - bash docker-deploy/ecs_deploy.sh
