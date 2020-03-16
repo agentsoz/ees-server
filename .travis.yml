@@ -13,5 +13,5 @@ services:
 script:
 - echo "trying without tests!"
 after_success:
-- docker-deploy/docker_push.sh
-- docker-deploy/ecs_deploy.sh
+- bash docker-deploy/docker_push.sh
+- bash docker-deploy/ecs_deploy.sh
