@@ -3,7 +3,10 @@ const express = require('express');
 const download = require('download');
 const fs = require('fs');
 var cors = require('cors')
-import {loadAllTiles, getTile} from './tilesaggr'
+var Client = require('ssh2').Client;
+
+
+import { loadAllTiles, getTile } from './tilesaggr'
 import { PHOENIX_DIR, loadAllFires} from './phoenixaggr'
 import { POPULATION_DIR, loadAllPopulations} from './populationaggr'
 import files from '../data/files.json';
@@ -12,6 +15,7 @@ var DATA_DIR = "data";
 
 var phoenixdict = {};
 var populationdict = {};
+var conn = new Client();
 
 async function loadFromFile(url) {
   // data.json should contain all fires and population data
@@ -80,7 +84,6 @@ async function main3() {
   server.get('/wake/please', function(req, res){
     res.send("OK");
   });
-
   // Serve the requested file (needed to get style.json)
   server.get('/:file', function(req, res){
     res.sendFile(__dirname + '/' + req.params.file);
@@ -117,6 +120,46 @@ async function main3() {
       console.log(err.message);
     });
   });
+   //Calling the ees engine in AWS ec2
+   server.get('/exec/ees', function(req, res){
+    
+    // Command for jar file execution 
+    var CMD = "java -Xms1g -Xmx1g \
+    -cp libs/*:ees-2.1.1-SNAPSHOT.jar \
+    io.github.agentsoz.ees.Run \
+    --config scenarios/mount-alexander-shire/maldon-600/ees.xml"
+
+    //Starting a ssh connection  
+    conn.on('ready', function() {
+
+      console.log('Client :: ready');
+
+      conn.exec(CMD, function(err, stream) {
+        if (err) throw err;
+        stream.on('close', function(code, signal) {
+
+          console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
+          conn.end();
+
+        }).on('data', function(data) {
+
+          console.log('STDOUT: ' + data);
+
+        }).stderr.on('data', function(data) {
+
+          console.log('STDERR: ' + data);
+          
+        });
+      });
+    }).connect({
+      host: '54.252.169.169',
+      port: 22,
+      username: 'ec2-user',
+      privateKey: require('fs').readFileSync('/Users/pawanmacbook/Downloads/SSH/MyKeyPairAus.pem')
+    });
+
+  });
+
   // Catch-all for the rest
   server.get('*', function(req, res){
     res.send('what???', 404);

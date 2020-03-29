@@ -51,7 +51,8 @@
     "global-mercator": "^3.0.3",
     "pixl-xml": "^1.0.13",
     "proj4": "^2.6.0",
-    "reproject": "^1.2.5"
+    "reproject": "^1.2.5",
+    "ssh2": "^0.8.9"
   },
   "now": {
     "public": true,
