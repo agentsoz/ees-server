@@ -11,7 +11,8 @@
     "server": "cd dist && node main.js",
     "server:watch": "cd dist && nodemon main.js --watch .",
     "dev": "npm run build:dev && npm-run-all --parallel build:dev:watch server:watch",
-    "start": "npm run server"
+    "start": "npm run server",
+    "preinstall": "npx npm-force-resolutions"
   },
   "repository": {
     "type": "git",
@@ -36,8 +37,8 @@
     "npm-run-all": "^4.1.3",
     "style-loader": "^0.23.0",
     "webpack": "^4.41.5",
-    "webpack-cli": "^3.1.1",
-    "webpack-dev-server": "^3.9.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0",
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
@@ -57,5 +58,9 @@
     "public": true,
     "name": "ees-server",
     "alias": "ees-server"
+  },
+  "resolutions": {
+    "dot-prop": "^5.1.1",
+    "minimist": "^1.2.3"
   }
 }
