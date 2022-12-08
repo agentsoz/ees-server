@@ -48,7 +48,7 @@
     "download": "^7.1.0",
     "epsg": "^0.5.0",
     "event-stream": "^3.3.4",
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "global-mercator": "^3.0.3",
     "pixl-xml": "^1.0.13",
     "proj4": "^2.6.0",
